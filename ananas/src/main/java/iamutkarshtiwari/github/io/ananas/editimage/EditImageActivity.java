@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -116,8 +117,13 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    public Uri sourceUri;
+
     public static void start(ActivityResultLauncher<Intent> launcher, Intent intent, Context context) {
-        if (TextUtils.isEmpty(intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH))) {
+        String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
+        String sourceUriStr = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
+
+        if (TextUtils.isEmpty(sourcePath) && TextUtils.isEmpty(sourceUriStr)) {
             Toast.makeText(context, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             return;
         }
@@ -145,7 +151,10 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
         isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
-
+        String sourceUriStr = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
+        if (!TextUtils.isEmpty(sourceUriStr)) {
+            sourceUri = Uri.parse(sourceUriStr);
+        }
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
         editorTitle = getIntent().getStringExtra(ImageEditorIntentBuilder.EDITOR_TITLE);
@@ -223,7 +232,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE);
         }
 
-        loadImageFromFile(sourceFilePath);
+        if (!TextUtils.isEmpty(sourceFilePath)) {
+            loadImageFromFile(sourceFilePath);
+        } else {
+            loadImageFromUri(sourceUri);
+        }
     }
 
     private void setOnMainBitmapChangeListener(OnMainBitmapChangeListener listener) {
@@ -328,6 +341,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     protected void onSaveTaskDone() {
         Intent returnIntent = new Intent();
+        if (sourceUri != null) {
+            returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_URI, sourceUri.toString());
+        }
         returnIntent.putExtra(ImageEditorIntentBuilder.SOURCE_PATH, sourceFilePath);
         returnIntent.putExtra(ImageEditorIntentBuilder.OUTPUT_PATH, outputFilePath);
         returnIntent.putExtra(IS_IMAGE_EDITED, numberOfOperations > 0);
@@ -366,6 +382,19 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         });
     }
 
+    private void loadImageFromUri(Uri uri) {
+        compositeDisposable.clear();
+
+        Disposable loadImageDisposable = loadImage(uri)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> loadingDialog.show())
+                .doFinally(() -> loadingDialog.dismiss())
+                .subscribe(processedBitmap -> changeMainBitmap(processedBitmap, false), e -> showToast(R.string.iamutkarshtiwari_github_io_ananas_load_error));
+
+        compositeDisposable.add(loadImageDisposable);
+    }
+
     private void loadImageFromFile(String filePath) {
         Disposable loadImageDisposable = loadImage(filePath)
                 .subscribeOn(Schedulers.io())
@@ -393,6 +422,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private void showToast(@StringRes int resId) {
         Toast.makeText(this, resId, Toast.LENGTH_SHORT).show();
+    }
+
+    private Single<Bitmap> loadImage(Uri uri) {
+        return Single.fromCallable(() -> BitmapUtils.decodeSampledBitmap(this, uri,
+                imageWidth, imageHeight));
     }
 
     @Override
