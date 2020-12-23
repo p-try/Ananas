@@ -82,6 +82,8 @@ public class TextEditorDialogFragment extends DialogFragment {
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         addTextEditText = view.findViewById(R.id.add_text_edit_text);
+        addTextEditText.requestFocus();
+
         inputMethodManager = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         TextView addTextDoneTv = view.findViewById(R.id.add_text_done_tv);
 
