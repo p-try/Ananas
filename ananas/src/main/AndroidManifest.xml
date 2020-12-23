@@ -6,7 +6,9 @@
         <activity
             android:name="iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity"
             android:label="@string/iamutkarshtiwari_github_io_ananas_library_name"
-            android:exported="true" />
+            android:exported="true"
+            android:windowSoftInputMode="adjustPan"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar"/>
 
         <activity android:name=".picchooser.SelectPictureActivity" />
     </application>
