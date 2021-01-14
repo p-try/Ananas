@@ -1,6 +1,5 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
-import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -13,8 +12,6 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import java.util.LinkedHashMap;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -22,30 +19,30 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import org.jetbrains.annotations.NotNull;
 
-import iamutkarshtiwari.github.io.ananas.BaseActivity;
+import java.util.LinkedHashMap;
+
 import iamutkarshtiwari.github.io.ananas.R;
-import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.StickerAdapter;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.StickerTypeAdapter;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.Matrix3;
 import iamutkarshtiwari.github.io.ananas.editimage.view.StickerItem;
-import iamutkarshtiwari.github.io.ananas.editimage.view.StickerView;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class StickerFragment extends BaseEditFragment {
+import static iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity.MODE_NONE;
+import static iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity.MODE_STICKERS;
+
+public class StickerFragment extends BaseEditFragment implements StickerAdapter.OnStickerSelection {
     public static final int INDEX = ModuleConfig.INDEX_STICKER;
     public static final String TAG = StickerFragment.class.getName();
 
     private ViewFlipper flipper;
-    private StickerView stickerView;
     private StickerAdapter stickerAdapter;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-    private Dialog loadingDialog;
+    private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     public static StickerFragment newInstance() {
         return new StickerFragment();
@@ -66,10 +63,6 @@ public class StickerFragment extends BaseEditFragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        loadingDialog = BaseActivity.getLoadingDialog(activity, R.string.iamutkarshtiwari_github_io_ananas_saving_image, false);
-
-        this.stickerView = activity.stickerView;
 
         flipper = view.findViewById(R.id.flipper);
         flipper.setInAnimation(activity, R.anim.in_bottom_to_top);
@@ -105,10 +98,9 @@ public class StickerFragment extends BaseEditFragment {
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_STICKERS;
-        activity.stickerFragment.getStickerView().setVisibility(
-                View.VISIBLE);
+        activity.mode = MODE_STICKERS;
         activity.bannerFlipper.showNext();
+        activity.stickerView.setVisibility(View.VISIBLE);
     }
 
     public void swipToStickerDetails(String path, int stickerCount) {
@@ -116,20 +108,85 @@ public class StickerFragment extends BaseEditFragment {
         flipper.showNext();
     }
 
-    public void selectedStickerItem(String path) {
+    @Override
+    public void onStickerSelected(String path) {
         int imageKey = getResources().getIdentifier(path, "drawable", getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageKey);
-        stickerView.addBitImage(bitmap);
-    }
 
-    private StickerView getStickerView() {
-        return stickerView;
+        activity.stickerView.addBitImage(bitmap);
     }
 
     private final class BackToMenuClick implements OnClickListener {
         @Override
         public void onClick(View v) {
             backToMain();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        flipper = null;
+    }
+
+    @Override
+    public void backToMain() {
+        activity.mode = MODE_NONE;
+        activity.bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
+        activity.stickerView.clear();
+        activity.stickerView.setVisibility(View.GONE);
+        flipper.showPrevious();
+        activity.bannerFlipper.showPrevious();
+    }
+
+    public void applyStickers() {
+        compositeDisposable.clear();
+
+        Disposable saveStickerDisposable = applyStickerToImage(activity.getMainBit())
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> activity.showLoadingDialog())
+                .doFinally(() -> activity.dismissLoadingDialog())
+                .subscribe(bitmap -> {
+                    if (bitmap == null) {
+                        return;
+                    }
+
+                    activity.stickerView.clear();
+                    activity.changeMainBitmap(bitmap, true);
+                    activity.stickerFragment.backToMain();
+                }, e -> {
+                    Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
+                });
+
+        compositeDisposable.add(saveStickerDisposable);
+    }
+
+    private Single<Bitmap> applyStickerToImage(Bitmap mainBitmap) {
+        return Single.fromCallable(() -> {
+            Matrix touchMatrix = activity.mainImage.getImageViewMatrix();
+
+            Bitmap resultBitmap = Bitmap.createBitmap(mainBitmap).copy(
+                    Bitmap.Config.ARGB_8888, true);
+            Canvas canvas = new Canvas(resultBitmap);
+
+            float[] data = new float[9];
+            touchMatrix.getValues(data);
+            Matrix3 cal = new Matrix3(data);
+            Matrix3 inverseMatrix = cal.inverseMatrix();
+            Matrix m = new Matrix();
+            m.setValues(inverseMatrix.getValues());
+            handleStickerImage(canvas, m);
+            return resultBitmap;
+        });
+    }
+
+    private void handleStickerImage(Canvas canvas, Matrix m) {
+        LinkedHashMap<Integer, StickerItem> addItems = activity.stickerView.getBank();
+        for (Integer id : addItems.keySet()) {
+            StickerItem item = addItems.get(id);
+            item.matrix.postConcat(m);
+            canvas.drawBitmap(item.bitmap, item.matrix, null);
         }
     }
 
@@ -143,66 +200,5 @@ public class StickerFragment extends BaseEditFragment {
     public void onDestroy() {
         compositeDisposable.dispose();
         super.onDestroy();
-    }
-
-    @Override
-    public void backToMain() {
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(0);
-        stickerView.clear();
-        stickerView.setVisibility(View.GONE);
-        activity.bannerFlipper.showPrevious();
-    }
-
-    public void applyStickers() {
-        compositeDisposable.clear();
-
-        Disposable saveStickerDisposable = applyStickerToImage(activity.getMainBit())
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(subscriber -> loadingDialog.show())
-                .doFinally(() -> loadingDialog.dismiss())
-                .subscribe(bitmap -> {
-                    if (bitmap == null) {
-                        return;
-                    }
-
-                    stickerView.clear();
-                    activity.changeMainBitmap(bitmap, true);
-                    backToMain();
-                }, e -> {
-                    Toast.makeText(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
-                });
-
-        compositeDisposable.add(saveStickerDisposable);
-    }
-
-    private Single<Bitmap> applyStickerToImage(Bitmap mainBitmap) {
-        return Single.fromCallable(() -> {
-            EditImageActivity context = (EditImageActivity) requireActivity();
-            Matrix touchMatrix = context.mainImage.getImageViewMatrix();
-
-            Bitmap resultBitmap = Bitmap.createBitmap(mainBitmap).copy(
-                    Bitmap.Config.ARGB_8888, true);
-            Canvas canvas = new Canvas(resultBitmap);
-
-            float[] data = new float[9];
-            touchMatrix.getValues(data);
-            Matrix3 cal = new Matrix3(data);
-            Matrix3 inverseMatrix = cal.inverseMatrix();
-            Matrix m = new Matrix();
-            m.setValues(inverseMatrix.getValues());
-            handleImage(canvas, m);
-            return resultBitmap;
-        });
-    }
-
-    private void handleImage(Canvas canvas, Matrix m) {
-        LinkedHashMap<Integer, StickerItem> addItems = stickerView.getBank();
-        for (Integer id : addItems.keySet()) {
-            StickerItem item = addItems.get(id);
-            item.matrix.postConcat(m);
-            canvas.drawBitmap(item.bitmap, item.matrix, null);
-        }
     }
 }

@@ -1,6 +1,8 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment.paint;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,18 +10,22 @@ import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
+import org.jetbrains.annotations.NotNull;
+
 import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.viewmodel.PaintViewModel;
 
 public class EraserConfigDialog extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
+
+    private PaintViewModel paintViewModel;
 
     public EraserConfigDialog() {
         // Required empty public constructor
     }
-
-    private Properties mProperties;
 
     public interface Properties {
         void onBrushSizeChanged(int brushSize);
@@ -28,6 +34,8 @@ public class EraserConfigDialog extends BottomSheetDialogFragment implements See
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        paintViewModel = new ViewModelProvider(requireActivity()).get(PaintViewModel.class);
     }
 
     @Override
@@ -39,20 +47,21 @@ public class EraserConfigDialog extends BottomSheetDialogFragment implements See
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         SeekBar eraserSizeSb = view.findViewById(R.id.sbSize);
+
+        if (paintViewModel.getEraserSize().getValue() != null)
+            eraserSizeSb.setProgress(paintViewModel.getEraserSize().getValue());
+
         eraserSizeSb.setOnSeekBarChangeListener(this);
-    }
 
-    void setPropertiesChangeListener(Properties properties) {
-        mProperties = properties;
+        if (paintViewModel.getEraserSize().getValue() != null) {
+            paintViewModel.setEraserSize(paintViewModel.getEraserSize().getValue());
+        }
     }
-
     @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+    public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
         int id = seekBar.getId();
         if (id == R.id.sbSize) {
-            if (mProperties != null) {
-                mProperties.onBrushSizeChanged(i);
-            }
+            paintViewModel.setEraserSize(value);
         }
     }
 
