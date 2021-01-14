@@ -9,6 +9,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -27,7 +32,6 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
 
     public static final int INDEX = ModuleConfig.INDEX_BEAUTY;
 
-    private View mainView;
     private Dialog dialog;
 
     private SeekBar smoothValueBar;
@@ -53,19 +57,19 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_beauty, null);
-
-        smoothValueBar = mainView.findViewById(R.id.smooth_value_bar);
-        whiteValueBar = mainView.findViewById(R.id.white_skin_value_bar);
-        dialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_loading,
-                false);
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_beauty, null);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        View backToMenu = mainView.findViewById(R.id.back_to_main);
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        dialog = BaseActivity.getLoadingDialog(activity, R.string.iamutkarshtiwari_github_io_ananas_loading, false);
+
+        smoothValueBar = view.findViewById(R.id.smooth_value_bar);
+        whiteValueBar = view.findViewById(R.id.white_skin_value_bar);
+
+        View backToMenu = view.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());// 返回主菜单
 
         smoothValueBar.setOnSeekBarChangeListener(this);

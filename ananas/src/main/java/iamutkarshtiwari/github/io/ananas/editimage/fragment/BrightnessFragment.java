@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -27,7 +30,6 @@ public class BrightnessFragment extends BaseEditFragment {
 
     private BrightnessView mBrightnessView;
     private SeekBar mSeekBar;
-    private View mainView;
 
     public static BrightnessFragment newInstance() {
         return new BrightnessFragment();
@@ -36,13 +38,7 @@ public class BrightnessFragment extends BaseEditFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_brightness, null);
-        mappingView(mainView);
-        return mainView;
-    }
-
-    private void mappingView(View view) {
-        mSeekBar = view.findViewById(R.id.seekBar);
+        return inflater.inflate(R.layout.fragment_edit_image_brightness, null);
     }
 
     @Override
@@ -51,13 +47,20 @@ public class BrightnessFragment extends BaseEditFragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mSeekBar = view.findViewById(R.id.seekBar);
+
+        View mBackToMenu = view.findViewById(R.id.back_to_main);
+        mBackToMenu.setOnClickListener(new BrightnessFragment.BackToMenuClick());
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        View mBackToMenu = mainView.findViewById(R.id.back_to_main);
-
-        this.mBrightnessView = ensureEditActivity().brightnessView;
-        mBackToMenu.setOnClickListener(new BrightnessFragment.BackToMenuClick());
+        this.mBrightnessView = activity.brightnessView;
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

@@ -5,6 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.ImageEditorIntentBuilder;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
@@ -21,18 +24,6 @@ public class MainMenuFragment extends BaseEditFragment implements
     public static final int INDEX = ModuleConfig.INDEX_MAIN;
 
     public static final String TAG = MainMenuFragment.class.getName();
-    private View mainView;
-
-    private View stickerBtn;
-    private View filterBtn;
-    private View cropBtn;
-    private View rotateBtn;
-    private View textBtn;
-    private View paintBtn;
-    private View beautyBtn;
-    private View brightnessBtn;
-    private View saturationBtn;
-    private Bundle intentBundle;
 
     private final BehaviorSubject<Boolean> menuOptionsClickableSubject = BehaviorSubject.create();
     private final CompositeDisposable disposable = new CompositeDisposable();
@@ -49,25 +40,23 @@ public class MainMenuFragment extends BaseEditFragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_main_menu,
-                null);
-        intentBundle = getArguments();
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_main_menu, null);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle intentBundle = getArguments();
 
-        stickerBtn = mainView.findViewById(R.id.btn_stickers);
-        filterBtn = mainView.findViewById(R.id.btn_filter);
-        cropBtn = mainView.findViewById(R.id.btn_crop);
-        rotateBtn = mainView.findViewById(R.id.btn_rotate);
-        textBtn = mainView.findViewById(R.id.btn_text);
-        paintBtn = mainView.findViewById(R.id.btn_paint);
-        beautyBtn = mainView.findViewById(R.id.btn_beauty);
-        brightnessBtn = mainView.findViewById(R.id.btn_brightness);
-        saturationBtn = mainView.findViewById(R.id.btn_contrast);
+        View stickerBtn = view.findViewById(R.id.btn_stickers);
+        View filterBtn = view.findViewById(R.id.btn_filter);
+        View cropBtn = view.findViewById(R.id.btn_crop);
+        View rotateBtn = view.findViewById(R.id.btn_rotate);
+        View textBtn = view.findViewById(R.id.btn_text);
+        View paintBtn = view.findViewById(R.id.btn_paint);
+        View beautyBtn = view.findViewById(R.id.btn_beauty);
+        View brightnessBtn = view.findViewById(R.id.btn_brightness);
+        View saturationBtn = view.findViewById(R.id.btn_contrast);
 
         if (intentBundle.getBoolean(ImageEditorIntentBuilder.STICKER_FEATURE, false)) {
             stickerBtn.setVisibility(View.VISIBLE);
@@ -114,10 +103,6 @@ public class MainMenuFragment extends BaseEditFragment implements
             saturationBtn.setOnClickListener(this);
         }
 
-        subscribeMenuOptionsSubject();
-    }
-
-    private void subscribeMenuOptionsSubject() {
         disposable.add(
                 menuOptionsClickableSubject
                         .subscribeOn(AndroidSchedulers.mainThread())
@@ -153,23 +138,23 @@ public class MainMenuFragment extends BaseEditFragment implements
 
     @Override
     public void onClick(View v) {
-        if (v == stickerBtn) {
+        if (v.getId() == R.id.btn_stickers) {
             onStickClick();
-        } else if (v == filterBtn) {
+        } else if (v.getId() == R.id.btn_filter) {
             onFilterClick();
-        } else if (v == cropBtn) {
+        } else if (v.getId() == R.id.btn_crop) {
             onCropClick();
-        } else if (v == rotateBtn) {
+        } else if (v.getId() == R.id.btn_rotate) {
             onRotateClick();
-        } else if (v == textBtn) {
+        } else if (v.getId() ==R.id.btn_text) {
             onAddTextClick();
-        } else if (v == paintBtn) {
+        } else if (v.getId() == R.id.btn_paint) {
             onPaintClick();
-        } else if (v == beautyBtn) {
+        } else if (v.getId() == R.id.btn_beauty) {
             onBeautyClick();
-        } else if (v == brightnessBtn) {
+        } else if (v.getId() == R.id.btn_brightness) {
             onBrightnessClick();
-        } else if (v == saturationBtn) {
+        } else if (v.getId() == R.id.btn_contrast) {
             onContrastClick();
         }
     }

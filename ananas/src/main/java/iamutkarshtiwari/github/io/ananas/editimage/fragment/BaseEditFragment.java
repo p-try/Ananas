@@ -1,23 +1,27 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
-import android.os.Bundle;
+import android.content.Context;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+
+import org.jetbrains.annotations.NotNull;
 
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 
 public abstract class BaseEditFragment extends Fragment {
+
     protected EditImageActivity activity;
 
-    protected EditImageActivity ensureEditActivity(){
-        if(activity == null){
+    private void ensureEditActivity() {
+        if (activity == null) {
             activity = (EditImageActivity) getActivity();
         }
-        return activity;
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onAttach(@NonNull @NotNull Context context) {
+        super.onAttach(context);
         ensureEditActivity();
     }
 
@@ -30,4 +34,6 @@ public abstract class BaseEditFragment extends Fragment {
     public abstract void onShow();
 
     public abstract void backToMain();
+
 }
+

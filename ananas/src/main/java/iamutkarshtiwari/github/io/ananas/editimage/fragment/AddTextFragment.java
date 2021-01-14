@@ -23,6 +23,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +50,6 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     public static final int INDEX = ModuleConfig.INDEX_ADDTEXT;
     public static final String TAG = AddTextFragment.class.getName();
 
-    private View mainView;
     private TextStickerView textStickersParentView;
     private ZoomLayout zoomLayout;
 
@@ -68,28 +69,27 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_add_text, container, false);
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_add_text, container, false);
     }
 
+
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        EditImageActivity editImageActivity = ensureEditActivity();
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        inputMethodManager = (InputMethodManager) editImageActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        View backToMenu = view.findViewById(R.id.back_to_main);
+        backToMenu.setOnClickListener(new BackToMenuClick());
 
-        textStickersParentView = editImageActivity.findViewById(R.id.text_sticker_panel);
+        LinearLayout addTextButton = view.findViewById(R.id.add_text_btn);
+        addTextButton.setOnClickListener(this);
+
+        inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+        textStickersParentView = activity.findViewById(R.id.text_sticker_panel);
         textStickersParentView.setDrawingCacheEnabled(true);
         addedViews = new ArrayList<>();
 
-        zoomLayout = editImageActivity.findViewById(R.id.text_sticker_panel_frame);
-
-        View backToMenu = mainView.findViewById(R.id.back_to_main);
-        backToMenu.setOnClickListener(new BackToMenuClick());
-
-        LinearLayout addTextButton = mainView.findViewById(R.id.add_text_btn);
-        addTextButton.setOnClickListener(this);
+        zoomLayout = activity.findViewById(R.id.text_sticker_panel_frame);
     }
 
     private void showTextEditDialog(final View rootView, String text, int colorCode) {
