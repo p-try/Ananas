@@ -157,7 +157,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .setSupportActionBarVisibility(false)
                     .build();
 
-            EditImageActivity.start(this, intent, ACTION_REQUEST_EDITIMAGE);
+//            EditImageActivity.start(this, intent, ACTION_REQUEST_EDITIMAGE);
         } catch (Exception e) {
             Toast.makeText(this, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             Log.e("Demo App", e.getMessage());

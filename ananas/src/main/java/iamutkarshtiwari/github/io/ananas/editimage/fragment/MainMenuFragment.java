@@ -5,6 +5,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.ImageEditorIntentBuilder;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
@@ -16,18 +21,6 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     public static final int INDEX = ModuleConfig.INDEX_MAIN;
 
     public static final String TAG = MainMenuFragment.class.getName();
-    private View mainView;
-
-    private View stickerBtn;
-    private View filterButton;
-    private View cropBtn;
-    private View rotateBtn;
-    private View mTextBtn;
-    private View mPaintBtn;
-    private View mBeautyBtn;
-    private View mBrightnessBtn;
-    private View mSaturationBtn;
-    private Bundle intentBundle;
 
     public static MainMenuFragment newInstance() {
         return new MainMenuFragment();
@@ -41,25 +34,23 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_main_menu,
-                null);
-        intentBundle = getArguments();
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_main_menu, null);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Bundle intentBundle = getArguments();
 
-        stickerBtn = mainView.findViewById(R.id.btn_stickers);
-        filterButton = mainView.findViewById(R.id.btn_filter);
-        cropBtn = mainView.findViewById(R.id.btn_crop);
-        rotateBtn = mainView.findViewById(R.id.btn_rotate);
-        mTextBtn = mainView.findViewById(R.id.btn_text);
-        mPaintBtn = mainView.findViewById(R.id.btn_paint);
-        mBeautyBtn = mainView.findViewById(R.id.btn_beauty);
-        mBrightnessBtn = mainView.findViewById(R.id.btn_brightness);
-        mSaturationBtn = mainView.findViewById(R.id.btn_contrast);
+        View stickerBtn = view.findViewById(R.id.btn_stickers);
+        View filterButton = view.findViewById(R.id.btn_filter);
+        View cropBtn = view.findViewById(R.id.btn_crop);
+        View rotateBtn = view.findViewById(R.id.btn_rotate);
+        View mTextBtn = view.findViewById(R.id.btn_text);
+        View mPaintBtn = view.findViewById(R.id.btn_paint);
+        View mBeautyBtn = view.findViewById(R.id.btn_beauty);
+        View mBrightnessBtn = view.findViewById(R.id.btn_brightness);
+        View mSaturationBtn = view.findViewById(R.id.btn_contrast);
 
         if (intentBundle.getBoolean(ImageEditorIntentBuilder.STICKER_FEATURE, false)) {
             stickerBtn.setVisibility(View.VISIBLE);
@@ -108,6 +99,29 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     }
 
     @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.btn_stickers) {
+            onStickClick();
+        } else if (v.getId() == R.id.btn_filter) {
+            onFilterClick();
+        } else if (v.getId() == R.id.btn_crop) {
+            onCropClick();
+        } else if (v.getId() == R.id.btn_rotate) {
+            onRotateClick();
+        } else if (v.getId() ==R.id.btn_text) {
+            onAddTextClick();
+        } else if (v.getId() == R.id.btn_paint) {
+            onPaintClick();
+        } else if (v.getId() == R.id.btn_beauty) {
+            onBeautyClick();
+        } else if (v.getId() == R.id.btn_brightness) {
+            onBrightnessClick();
+        } else if (v.getId() == R.id.btn_contrast) {
+            onContrastClick();
+        }
+    }
+
+    @Override
     public void onShow() {
         // do nothing
     }
@@ -115,29 +129,6 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     @Override
     public void backToMain() {
         //do nothing
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v == stickerBtn) {
-            onStickClick();
-        } else if (v == filterButton) {
-            onFilterClick();
-        } else if (v == cropBtn) {
-            onCropClick();
-        } else if (v == rotateBtn) {
-            onRotateClick();
-        } else if (v == mTextBtn) {
-            onAddTextClick();
-        } else if (v == mPaintBtn) {
-            onPaintClick();
-        } else if (v == mBeautyBtn) {
-            onBeautyClick();
-        } else if (v == mBrightnessBtn) {
-            onBrightnessClick();
-        } else if (v == mSaturationBtn) {
-            onContrastClick();
-        }
     }
 
     private void onStickClick() {

@@ -8,7 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -24,7 +27,6 @@ public class SaturationFragment extends BaseEditFragment {
     public static final String TAG = SaturationFragment.class.getName();
     private SaturationView mSaturationView;
     private SeekBar mSeekBar;
-    private View mainView;
 
     public static SaturationFragment newInstance() {
         return new SaturationFragment();
@@ -33,28 +35,18 @@ public class SaturationFragment extends BaseEditFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_saturation, null);
-        mappingView(mainView);
-        return mainView;
-    }
-
-    private void mappingView(View view) {
-        mSeekBar = view.findViewById(R.id.seekBar);
+        return inflater.inflate(R.layout.fragment_edit_image_saturation, null);
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
 
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+        this.mSaturationView = activity.saturationView;
 
-        View mBackToMenu = mainView.findViewById(R.id.back_to_main);
-
-        this.mSaturationView = ensureEditActivity().saturationView;
+        View mBackToMenu = view.findViewById(R.id.back_to_main);
         mBackToMenu.setOnClickListener(new SaturationFragment.BackToMenuClick());
+
+        mSeekBar = view.findViewById(R.id.seekBar);
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

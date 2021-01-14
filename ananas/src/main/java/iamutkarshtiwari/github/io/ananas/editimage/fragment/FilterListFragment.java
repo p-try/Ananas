@@ -8,8 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.jetbrains.annotations.NotNull;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -28,7 +33,6 @@ public class FilterListFragment extends BaseEditFragment {
     public static final int NULL_FILTER_INDEX = 0;
     public static final String TAG = FilterListFragment.class.getName();
 
-    private View mainView;
     private Bitmap filterBitmap;
     private Bitmap currentBitmap;
     private Dialog loadingDialog;
@@ -47,24 +51,23 @@ public class FilterListFragment extends BaseEditFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_fliter, null);
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_loading,
-                false);
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_fliter, null);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        RecyclerView filterRecyclerView = mainView.findViewById(R.id.filter_recycler);
+        loadingDialog = BaseActivity.getLoadingDialog(activity, R.string.iamutkarshtiwari_github_io_ananas_loading, false);
+
+        RecyclerView filterRecyclerView = view.findViewById(R.id.filter_recycler);
         FilterAdapter filterAdapter = new FilterAdapter(this, getContext());
         LinearLayoutManager layoutManager
                 = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
         filterRecyclerView.setLayoutManager(layoutManager);
         filterRecyclerView.setAdapter(filterAdapter);
 
-        View backBtn = mainView.findViewById(R.id.back_to_main);
+        View backBtn = view.findViewById(R.id.back_to_main);
         backBtn.setOnClickListener(v -> backToMain());
     }
 

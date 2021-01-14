@@ -12,6 +12,11 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import org.jetbrains.annotations.NotNull;
+
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -31,7 +36,6 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
 
     private static final int RIGHT_ANGLE = 90;
 
-    private View mainView;
     private RotateImageView rotatePanel;
     private Dialog loadingDialog;
 
@@ -49,27 +53,24 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_rotate, null);
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_loading,
-                false);
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_rotate, null);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        this.rotatePanel = ensureEditActivity().rotatePanel;
-        setClickListeners();
-    }
+        loadingDialog = BaseActivity.getLoadingDialog(activity, R.string.iamutkarshtiwari_github_io_ananas_loading, false);
 
-    private void setClickListeners() {
-        View backToMenu = mainView.findViewById(R.id.back_to_main);
+        this.rotatePanel = activity.rotatePanel;
+
+        View backToMenu = view.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());
 
-        ImageView rotateLeft = mainView.findViewById(R.id.rotate_left);
-        ImageView rotateRight = mainView.findViewById(R.id.rotate_right);
+        ImageView rotateLeft = view.findViewById(R.id.rotate_left);
         rotateLeft.setOnClickListener(this);
+
+        ImageView rotateRight = view.findViewById(R.id.rotate_right);
         rotateRight.setOnClickListener(this);
     }
 

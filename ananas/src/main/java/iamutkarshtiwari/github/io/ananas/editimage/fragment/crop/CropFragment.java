@@ -13,6 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
@@ -38,8 +40,6 @@ public class CropFragment extends BaseEditFragment {
     private static int SELECTED_COLOR = R.color.white;
     private static int UNSELECTED_COLOR = R.color.text_color_gray_3;
 
-    private View mainView;
-    private LinearLayout ratioList;
     private CropImageView cropPanel;
     private OnLoadingDialogListener loadingDialogListener;
 
@@ -60,11 +60,10 @@ public class CropFragment extends BaseEditFragment {
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_crop, null);
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_crop, null);
     }
 
-    private void setUpRatioList() {
+    private void setUpRatioList(LinearLayout ratioList) {
         ratioList.removeAllViews();
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
@@ -109,7 +108,7 @@ public class CropFragment extends BaseEditFragment {
             if (ratioText == RatioText.FREE) {
                 cropPanel.setFixedAspectRatio(false);
             } else if (ratioText == RatioText.FIT_IMAGE) {
-                Bitmap currentBmp = ensureEditActivity().getMainBit();
+                Bitmap currentBmp = activity.getMainBit();
                 cropPanel.setAspectRatio(currentBmp.getWidth(), currentBmp.getHeight());
             } else {
                 AspectRatio aspectRatio = ratioText.getAspectRatio();
@@ -128,16 +127,17 @@ public class CropFragment extends BaseEditFragment {
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        loadingDialogListener = ensureEditActivity();
+        loadingDialogListener = activity;
+        this.cropPanel = activity.cropPanel;
 
-        View backToMenu = mainView.findViewById(R.id.back_to_main);
-        ratioList = mainView.findViewById(R.id.ratio_list_group);
-        setUpRatioList();
-        this.cropPanel = ensureEditActivity().cropPanel;
+        View backToMenu = view.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());
+
+        LinearLayout ratioList = view.findViewById(R.id.ratio_list_group);
+        setUpRatioList(ratioList);
     }
 
     @Override

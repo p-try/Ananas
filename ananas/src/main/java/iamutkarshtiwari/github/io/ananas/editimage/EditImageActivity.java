@@ -1,12 +1,13 @@
 package iamutkarshtiwari.github.io.ananas.editimage;
 
 import android.Manifest;
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -25,7 +26,6 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -41,10 +41,12 @@ import iamutkarshtiwari.github.io.ananas.editimage.fragment.RotateFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.SaturationFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
+import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.EraserConfigDialog;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnMainBitmapChangeListener;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.BitmapUtils;
+import iamutkarshtiwari.github.io.ananas.editimage.utils.Matrix3;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.PermissionUtils;
 import iamutkarshtiwari.github.io.ananas.editimage.view.BrightnessView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView;
@@ -62,7 +64,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class EditImageActivity extends BaseActivity implements OnLoadingDialogListener {
+import static android.view.View.GONE;
+
+public class EditImageActivity extends BaseActivity implements OnLoadingDialogListener, PaintFragment.PaintToolActionListeners {
     public static final String IS_IMAGE_EDITED = "is_image_edited";
     public static final int MODE_NONE = 0;
     public static final int MODE_STICKERS = 1;
@@ -116,18 +120,10 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    private EraserConfigDialog eraserConfigDialog = null;
+
+
     public Uri sourceUri;
-
-    public static void start(Activity activity, Intent intent, int requestCode) {
-        String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
-        String sourceUriStr = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
-
-        if (TextUtils.isEmpty(sourcePath) && TextUtils.isEmpty(sourceUriStr)) {
-            Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        activity.startActivityForResult(intent, requestCode);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -155,7 +151,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
-        isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
+        isSupportActionBarEnabled = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
         String sourceUriStr = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
         if (!TextUtils.isEmpty(sourceUriStr)) {
             sourceUri = Uri.parse(sourceUriStr);
@@ -565,7 +561,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     addTextFragment.applyTextImage();
                     break;
                 case MODE_PAINT:
-                    paintFragment.savePaintImage();
+                    savePaintImage();
                     break;
                 case MODE_BEAUTY:
                     beautyFragment.applyBeauty();
@@ -580,5 +576,116 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     break;
             }
         }
+    }
+
+    @Override
+    public void initPaintView(float brushSize, int brushColor, float eraserSize, float brushAlpha) {
+        updateBrushData(brushSize, brushAlpha, brushColor);
+        updateEraserData(eraserSize);
+    }
+
+    @Override
+    public void updateEraserData(float eraserSize) {
+        paintView.setEraserStrokeWidth(eraserSize);
+    }
+
+    @Override
+    public void updateBrushData(float brushSize, float brushAlpha, int brushColor) {
+        paintView.setWidth(brushSize);
+        paintView.setColor(brushColor);
+        paintView.setStrokeAlpha(brushAlpha);
+    }
+
+    @Override
+    public void setPaintViewVisibility(int visibility) {
+        paintView.setVisibility(visibility);
+    }
+
+    @Override
+    public void resetPaintView() {
+        paintView.reset();
+    }
+
+    @Override
+    public void setIsEraser(boolean isEraser) {
+        paintView.setEraser(isEraser);
+    }
+
+    @Override
+    public void handleBackToMain() {
+        mode = EditImageActivity.MODE_NONE;
+        bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
+        mainImage.setVisibility(View.VISIBLE);
+        bannerFlipper.showPrevious();
+
+        resetPaintView();
+        setPaintViewVisibility(GONE);
+    }
+
+    public void savePaintImage() {
+        compositeDisposable.clear();
+
+        Disposable applyPaintDisposable = applyPaint(getMainBit())
+                .flatMap(bitmap -> {
+                    if (bitmap == null) {
+                        return Single.error(new Throwable("Error occurred while applying paint"));
+                    } else {
+                        return Single.just(bitmap);
+                    }
+                })
+                .subscribeOn(Schedulers.computation())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe(subscriber -> showLoadingDialog())
+                .doFinally(this::dismissLoadingDialog)
+                .subscribe(bitmap -> {
+                    resetPaintView();
+                    changeMainBitmap(bitmap, true);
+                    paintFragment.backToMain();
+                }, e -> {
+                    // Do nothing on error
+                });
+
+        compositeDisposable.add(applyPaintDisposable);
+    }
+
+    private Single<Bitmap> applyPaint(Bitmap mainBitmap) {
+        return Single.fromCallable(() -> {
+            Matrix touchMatrix = mainImage.getImageViewMatrix();
+
+            Bitmap resultBit = Bitmap.createBitmap(mainBitmap).copy(
+                    Bitmap.Config.ARGB_8888, true);
+            Canvas canvas = new Canvas(resultBit);
+
+            float[] data = new float[9];
+            touchMatrix.getValues(data);
+            Matrix3 cal = new Matrix3(data);
+            Matrix3 inverseMatrix = cal.inverseMatrix();
+            Matrix matrix = new Matrix();
+            matrix.setValues(inverseMatrix.getValues());
+
+            handleImage(canvas, matrix);
+
+            return resultBit;
+        });
+    }
+
+    private void handleImage(Canvas canvas, Matrix matrix) {
+        float[] f = new float[9];
+        matrix.getValues(f);
+
+        int dx = (int) f[Matrix.MTRANS_X];
+        int dy = (int) f[Matrix.MTRANS_Y];
+
+        float scale_x = f[Matrix.MSCALE_X];
+        float scale_y = f[Matrix.MSCALE_Y];
+
+        canvas.save();
+        canvas.translate(dx, dy);
+        canvas.scale(scale_x, scale_y);
+
+        if (paintView.getPaintBit() != null) {
+            canvas.drawBitmap(paintView.getPaintBit(), 0, 0, null);
+        }
+        canvas.restore();
     }
 }

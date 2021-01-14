@@ -15,6 +15,8 @@ import android.widget.ViewFlipper;
 
 import java.util.LinkedHashMap;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -39,7 +41,6 @@ public class StickerFragment extends BaseEditFragment {
     public static final int INDEX = ModuleConfig.INDEX_STICKER;
     public static final String TAG = StickerFragment.class.getName();
 
-    private View mainView;
     private ViewFlipper flipper;
     private StickerView stickerView;
     private StickerAdapter stickerAdapter;
@@ -59,43 +60,47 @@ public class StickerFragment extends BaseEditFragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        mainView = inflater.inflate(R.layout.fragment_edit_image_sticker_type,
-                null);
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_saving_image,
-                false);
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_sticker_type, null);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        loadingDialog = BaseActivity.getLoadingDialog(activity, R.string.iamutkarshtiwari_github_io_ananas_saving_image, false);
+
         this.stickerView = activity.stickerView;
-        flipper = mainView.findViewById(R.id.flipper);
+
+        flipper = view.findViewById(R.id.flipper);
         flipper.setInAnimation(activity, R.anim.in_bottom_to_top);
         flipper.setOutAnimation(activity, R.anim.out_bottom_to_top);
 
-        RecyclerView typeList = mainView
-                .findViewById(R.id.stickers_type_list);
+        RecyclerView typeList = view.findViewById(R.id.stickers_type_list);
         typeList.setHasFixedSize(true);
-        LinearLayoutManager mLayoutManager = new LinearLayoutManager(activity);
+        LinearLayoutManager mLayoutManager = new LinearLayoutManager(getContext());
         mLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         typeList.setLayoutManager(mLayoutManager);
         typeList.setAdapter(new StickerTypeAdapter(this));
 
-        RecyclerView stickerList = mainView.findViewById(R.id.stickers_list);
+        RecyclerView stickerList = view.findViewById(R.id.stickers_list);
         stickerList.setHasFixedSize(true);
-        LinearLayoutManager stickerListLayoutManager = new LinearLayoutManager(
-                activity);
+        LinearLayoutManager stickerListLayoutManager = new LinearLayoutManager(getContext());
         stickerListLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
         stickerList.setLayoutManager(stickerListLayoutManager);
         stickerAdapter = new StickerAdapter(this);
         stickerList.setAdapter(stickerAdapter);
 
-        View backToMenu = mainView.findViewById(R.id.back_to_main);
+        View backToMenu = view.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());
 
-        View backToType = mainView.findViewById(R.id.back_to_type);
+        View backToType = view.findViewById(R.id.back_to_type);
         backToType.setOnClickListener(v -> flipper.showPrevious());
+    }
+
+    @Override
+    public void onActivityCreated(Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+
     }
 
     @Override
