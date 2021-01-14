@@ -1,6 +1,7 @@
 package iamutkarshtiwari.github.io.ananas.editimage;
 
 import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
@@ -29,9 +31,13 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.Observer;
+import androidx.lifecycle.ViewModelProvider;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.LinkedHashMap;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -44,12 +50,10 @@ import iamutkarshtiwari.github.io.ananas.editimage.fragment.RotateFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.SaturationFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
-import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.EraserConfigDialog;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnMainBitmapChangeListener;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.BitmapUtils;
-import iamutkarshtiwari.github.io.ananas.editimage.utils.Matrix3;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.PermissionUtils;
 import iamutkarshtiwari.github.io.ananas.editimage.view.BrightnessView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView;
@@ -60,6 +64,7 @@ import iamutkarshtiwari.github.io.ananas.editimage.view.StickerView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
+import iamutkarshtiwari.github.io.ananas.editimage.viewmodel.PaintViewModel;
 import iamutkarshtiwari.github.io.ananas.editimage.widget.RedoUndoController;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -67,9 +72,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-import static android.view.View.GONE;
-
-public class EditImageActivity extends BaseActivity implements OnLoadingDialogListener, PaintFragment.PaintToolActionListeners {
+public class EditImageActivity extends BaseActivity implements OnLoadingDialogListener {
     public static final String IS_IMAGE_EDITED = "is_image_edited";
     public static final int MODE_NONE = 0;
     public static final int MODE_STICKERS = 1;
@@ -122,10 +125,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private OnMainBitmapChangeListener onMainBitmapChangeListener;
     private final CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    private EraserConfigDialog eraserConfigDialog = null;
-
-
     public Uri sourceUri;
+
+    PaintViewModel paintViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -133,6 +135,15 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         setContentView(R.layout.activity_image_edit);
         getData();
         initView();
+
+        paintViewModel = new ViewModelProvider(this).get(PaintViewModel.class);
+
+        paintViewModel.getBrushSize().observe(this, size -> paintView.setWidth(size));
+        paintViewModel.getBrushOpacity().observe(this, size -> paintView.setStrokeAlpha(size));
+        paintViewModel.getBrushColor().observe(this, color -> paintView.setColor(color));
+
+        paintViewModel.getEraserSize().observe(this, value -> paintView.setEraserStrokeWidth(value));
+        paintViewModel.isEraser().observe(this, value -> paintView.setEraser(value));
     }
 
     @Override
@@ -202,8 +213,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         mainMenuFragment = MainMenuFragment.newInstance();
         mainMenuFragment.setArguments(getIntent().getExtras());
 
-        BottomGalleryAdapter bottomGalleryAdapter = new BottomGalleryAdapter(
-                this.getSupportFragmentManager());
+        BottomGalleryAdapter bottomGalleryAdapter = new BottomGalleryAdapter(this.getSupportFragmentManager());
         stickerFragment = StickerFragment.newInstance();
         filterListFragment = FilterListFragment.newInstance();
         cropFragment = CropFragment.newInstance();
@@ -447,23 +457,21 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         }
 
         if (lock) {
-            switch (getWindowManager().getDefaultDisplay().getRotation()) {
-                case Surface
-                        .ROTATION_0:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    break;
-                case Surface
-                        .ROTATION_90:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    break;
-                case Surface
-                        .ROTATION_180:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-                    break;
-                case Surface
-                        .ROTATION_270:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-                    break;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
+                switch (getWindowManager().getDefaultDisplay().getRotation()) {
+                    case Surface.ROTATION_0:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        break;
+                    case Surface.ROTATION_90:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        break;
+                    case Surface.ROTATION_180:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                        break;
+                    case Surface.ROTATION_270:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                        break;
+                }
             }
         } else
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
@@ -555,7 +563,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     addTextFragment.applyTextImage();
                     break;
                 case MODE_PAINT:
-                    savePaintImage();
+                    paintFragment.savePaintImage();
                     break;
                 case MODE_BEAUTY:
                     beautyFragment.applyBeauty();
@@ -570,116 +578,5 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                     break;
             }
         }
-    }
-
-    @Override
-    public void initPaintView(float brushSize, int brushColor, float eraserSize, float brushAlpha) {
-        updateBrushData(brushSize, brushAlpha, brushColor);
-        updateEraserData(eraserSize);
-    }
-
-    @Override
-    public void updateEraserData(float eraserSize) {
-        paintView.setEraserStrokeWidth(eraserSize);
-    }
-
-    @Override
-    public void updateBrushData(float brushSize, float brushAlpha, int brushColor) {
-        paintView.setWidth(brushSize);
-        paintView.setColor(brushColor);
-        paintView.setStrokeAlpha(brushAlpha);
-    }
-
-    @Override
-    public void setPaintViewVisibility(int visibility) {
-        paintView.setVisibility(visibility);
-    }
-
-    @Override
-    public void resetPaintView() {
-        paintView.reset();
-    }
-
-    @Override
-    public void setIsEraser(boolean isEraser) {
-        paintView.setEraser(isEraser);
-    }
-
-    @Override
-    public void handleBackToMain() {
-        mode = EditImageActivity.MODE_NONE;
-        bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
-        mainImage.setVisibility(View.VISIBLE);
-        bannerFlipper.showPrevious();
-
-        resetPaintView();
-        setPaintViewVisibility(GONE);
-    }
-
-    public void savePaintImage() {
-        compositeDisposable.clear();
-
-        Disposable applyPaintDisposable = applyPaint(getMainBit())
-                .flatMap(bitmap -> {
-                    if (bitmap == null) {
-                        return Single.error(new Throwable("Error occurred while applying paint"));
-                    } else {
-                        return Single.just(bitmap);
-                    }
-                })
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(subscriber -> showLoadingDialog())
-                .doFinally(this::dismissLoadingDialog)
-                .subscribe(bitmap -> {
-                    resetPaintView();
-                    changeMainBitmap(bitmap, true);
-                    paintFragment.backToMain();
-                }, e -> {
-                    // Do nothing on error
-                });
-
-        compositeDisposable.add(applyPaintDisposable);
-    }
-
-    private Single<Bitmap> applyPaint(Bitmap mainBitmap) {
-        return Single.fromCallable(() -> {
-            Matrix touchMatrix = mainImage.getImageViewMatrix();
-
-            Bitmap resultBit = Bitmap.createBitmap(mainBitmap).copy(
-                    Bitmap.Config.ARGB_8888, true);
-            Canvas canvas = new Canvas(resultBit);
-
-            float[] data = new float[9];
-            touchMatrix.getValues(data);
-            Matrix3 cal = new Matrix3(data);
-            Matrix3 inverseMatrix = cal.inverseMatrix();
-            Matrix matrix = new Matrix();
-            matrix.setValues(inverseMatrix.getValues());
-
-            handleImage(canvas, matrix);
-
-            return resultBit;
-        });
-    }
-
-    private void handleImage(Canvas canvas, Matrix matrix) {
-        float[] f = new float[9];
-        matrix.getValues(f);
-
-        int dx = (int) f[Matrix.MTRANS_X];
-        int dy = (int) f[Matrix.MTRANS_Y];
-
-        float scale_x = f[Matrix.MSCALE_X];
-        float scale_y = f[Matrix.MSCALE_Y];
-
-        canvas.save();
-        canvas.translate(dx, dy);
-        canvas.scale(scale_x, scale_y);
-
-        if (paintView.getPaintBit() != null) {
-            canvas.drawBitmap(paintView.getPaintBit(), 0, 0, null);
-        }
-        canvas.restore();
     }
 }
