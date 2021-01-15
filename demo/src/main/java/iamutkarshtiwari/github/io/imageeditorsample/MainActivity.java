@@ -142,22 +142,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void editImageClick() {
         File outputFile = FileUtils.genEditFile();
         try {
-            Intent intent = new ImageEditorIntentBuilder(this, path, outputFile.getAbsolutePath())
-                    .withAddText()
-                    .withPaintFeature()
-                    .withFilterFeature()
-                    .withRotateFeature()
-                    .withCropFeature()
-                    .withBrightnessFeature()
-                    .withSaturationFeature()
-                    .withBeautyFeature()
-                    .withStickerFeature()
-                    .withEditorTitle("Photo Editor")
-                    .forcePortrait(true)
-                    .setSupportActionBarVisibility(false)
-                    .build();
-
-//            EditImageActivity.start(this, intent, ACTION_REQUEST_EDITIMAGE);
+            Intent intent = ImageEditorIntentBuilder.Companion.getImageEditorIntent(this, path, outputFile.getAbsolutePath());
+            startActivityForResult(intent, ACTION_REQUEST_EDITIMAGE);
         } catch (Exception e) {
             Toast.makeText(this, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             Log.e("Demo App", e.getMessage());
@@ -255,9 +241,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .doFinally(() -> loadingDialog.dismiss())
                 .subscribe(
                         this::setMainBitmap,
-                        e -> { e.printStackTrace();
+                        e -> {
+                            e.printStackTrace();
                             Toast.makeText(
-                                this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show();}
+                                    this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show();
+                        }
                 );
 
         compositeDisposable.add(applyRotationDisposable);
