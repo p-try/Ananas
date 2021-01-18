@@ -91,12 +91,6 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-    }
-
-    @Override
     public void onShow() {
         if (getActivityInstance() != null) {
             getActivityInstance().mode = MODE_STICKERS;
