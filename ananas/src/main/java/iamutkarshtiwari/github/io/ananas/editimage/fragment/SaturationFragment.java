@@ -38,7 +38,7 @@ public class SaturationFragment extends BaseEditFragment {
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
 
         View mBackToMenu = view.findViewById(R.id.back_to_main);
         mBackToMenu.setOnClickListener(new SaturationFragment.BackToMenuClick());

@@ -54,7 +54,7 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         View backToMenu = view.findViewById(R.id.back_to_main);
