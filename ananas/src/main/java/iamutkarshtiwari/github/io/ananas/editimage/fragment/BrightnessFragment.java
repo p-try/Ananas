@@ -28,7 +28,6 @@ public class BrightnessFragment extends BaseEditFragment {
 
     private static final int INITIAL_BRIGHTNESS = 0;
 
-    private BrightnessView mBrightnessView;
     private SeekBar mSeekBar;
 
     public static BrightnessFragment newInstance() {
@@ -60,12 +59,12 @@ public class BrightnessFragment extends BaseEditFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        this.mBrightnessView = activity.brightnessView;
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float value = progress - (seekBar.getMax() / 2);
-                activity.brightnessView.setBright(value / 10f);
+                if (getActivityInstance() != null)
+                    getActivityInstance().brightnessView.setBright(value / 10f);
             }
 
             @Override
@@ -83,25 +82,29 @@ public class BrightnessFragment extends BaseEditFragment {
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_BRIGHTNESS;
-        activity.mainImage.setImageBitmap(activity.getMainBit());
-        activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-        activity.mainImage.setVisibility(View.GONE);
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_BRIGHTNESS;
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            getActivityInstance().mainImage.setVisibility(View.GONE);
 
-        activity.brightnessView.setImageBitmap(activity.getMainBit());
-        activity.brightnessView.setVisibility(View.VISIBLE);
+            getActivityInstance().brightnessView.setImageBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().brightnessView.setVisibility(View.VISIBLE);
+            getActivityInstance().bannerFlipper.showNext();
+        }
         initView();
-        activity.bannerFlipper.showNext();
     }
 
     @Override
     public void backToMain() {
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(0);
-        activity.mainImage.setVisibility(View.VISIBLE);
-        activity.brightnessView.setVisibility(View.GONE);
-        activity.bannerFlipper.showPrevious();
-        activity.brightnessView.setBright(INITIAL_BRIGHTNESS);
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_NONE;
+            getActivityInstance().bottomGallery.setCurrentItem(0);
+            getActivityInstance().mainImage.setVisibility(View.VISIBLE);
+            getActivityInstance().brightnessView.setVisibility(View.GONE);
+            getActivityInstance().bannerFlipper.showPrevious();
+            getActivityInstance().brightnessView.setBright(INITIAL_BRIGHTNESS);
+        }
     }
 
     public void applyBrightness() {
@@ -109,8 +112,10 @@ public class BrightnessFragment extends BaseEditFragment {
             backToMain();
             return;
         }
-        Bitmap bitmap = ((BitmapDrawable) mBrightnessView.getDrawable()).getBitmap();
-        activity.changeMainBitmap(Utils.brightBitmap(bitmap, mBrightnessView.getBright()), true);
+        if (getActivityInstance() != null) {
+            Bitmap bitmap = ((BitmapDrawable) getActivityInstance().brightnessView.getDrawable()).getBitmap();
+            getActivityInstance().changeMainBitmap(Utils.brightBitmap(bitmap, getActivityInstance().brightnessView.getBright()), true);
+        }
         backToMain();
     }
 

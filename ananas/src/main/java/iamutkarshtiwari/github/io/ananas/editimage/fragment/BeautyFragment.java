@@ -32,8 +32,6 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
 
     public static final int INDEX = ModuleConfig.INDEX_BEAUTY;
 
-    private Dialog dialog;
-
     private SeekBar smoothValueBar;
     private SeekBar whiteValueBar;
 
@@ -63,8 +61,6 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        dialog = BaseActivity.getLoadingDialog(activity, R.string.iamutkarshtiwari_github_io_ananas_loading, false);
 
         smoothValueBar = view.findViewById(R.id.smooth_value_bar);
         whiteValueBar = view.findViewById(R.id.white_skin_value_bar);
@@ -96,20 +92,27 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
         smooth = smoothValueBar.getProgress();
         whiteSkin = whiteValueBar.getProgress();
 
-        if (smooth == 0 && whiteSkin == 0) {
-            activity.mainImage.setImageBitmap(activity.getMainBit());
+        if (smooth == 0 && whiteSkin == 0 && getActivityInstance() != null) {
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
             return;
         }
 
         beautyDisposable = beautify(smooth, whiteSkin)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(subscriber -> dialog.show())
-                .doFinally(() -> dialog.dismiss())
+                .doOnSubscribe(subscriber -> {
+                    if (getActivityInstance() != null)
+                        getActivityInstance().showLoadingDialog();
+                })
+                .doFinally(() -> {
+                    if (getActivityInstance() != null)
+                        getActivityInstance().dismissLoadingDialog();
+                })
                 .subscribe(bitmap -> {
                     if (bitmap == null)
                         return;
-                    activity.mainImage.setImageBitmap(bitmap);
+                    if (getActivityInstance() != null)
+                        getActivityInstance().mainImage.setImageBitmap(bitmap);
                     finalBmp = bitmap;
                 }, e -> {
                     // Do nothing on error
@@ -119,11 +122,14 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
 
     private Single<Bitmap> beautify(int smoothVal, int whiteSkinVal) {
         return Single.fromCallable(() -> {
-            Bitmap srcBitmap = Bitmap.createBitmap(
-                    activity.getMainBit().copy(
-                            Bitmap.Config.ARGB_8888, true)
-            );
-            PhotoProcessing.handleSmoothAndWhiteSkin(srcBitmap, smoothVal, whiteSkinVal);
+            Bitmap srcBitmap = null;
+            if (getActivityInstance() != null) {
+                srcBitmap = Bitmap.createBitmap(
+                        getActivityInstance().getMainBit().copy(
+                                Bitmap.Config.ARGB_8888, true)
+                );
+                PhotoProcessing.handleSmoothAndWhiteSkin(srcBitmap, smoothVal, whiteSkinVal);
+            }
             return srcBitmap;
         });
     }
@@ -142,27 +148,31 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
         smoothValueBar.setProgress(0);
         whiteValueBar.setProgress(0);
 
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
-        activity.mainImage.setImageBitmap(activity.getMainBit());// 返回原图
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_NONE;
+            getActivityInstance().bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());// 返回原图
 
-        activity.mainImage.setVisibility(View.VISIBLE);
-        activity.mainImage.setScaleEnabled(true);
-        activity.bannerFlipper.showPrevious();
+            getActivityInstance().mainImage.setVisibility(View.VISIBLE);
+            getActivityInstance().mainImage.setScaleEnabled(true);
+            getActivityInstance().bannerFlipper.showPrevious();
+        }
     }
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_BEAUTY;
-        activity.mainImage.setImageBitmap(activity.getMainBit());
-        activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-        activity.mainImage.setScaleEnabled(false);
-        activity.bannerFlipper.showNext();
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_BEAUTY;
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            getActivityInstance().mainImage.setScaleEnabled(false);
+            getActivityInstance().bannerFlipper.showNext();
+        }
     }
 
     public void applyBeauty() {
-        if (finalBmp != null && (smooth != 0 || whiteSkin != 0)) {
-            activity.changeMainBitmap(finalBmp, true);
+        if (finalBmp != null && (smooth != 0 || whiteSkin != 0) && getActivityInstance() != null) {
+            getActivityInstance().changeMainBitmap(finalBmp, true);
         }
 
         backToMain();

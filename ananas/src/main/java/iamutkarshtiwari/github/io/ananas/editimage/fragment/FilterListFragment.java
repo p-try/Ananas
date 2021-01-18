@@ -35,7 +35,6 @@ public class FilterListFragment extends BaseEditFragment {
 
     private Bitmap filterBitmap;
     private Bitmap currentBitmap;
-    private Dialog loadingDialog;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -58,8 +57,6 @@ public class FilterListFragment extends BaseEditFragment {
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loadingDialog = BaseActivity.getLoadingDialog(activity, R.string.iamutkarshtiwari_github_io_ananas_loading, false);
-
         RecyclerView filterRecyclerView = view.findViewById(R.id.filter_recycler);
         FilterAdapter filterAdapter = new FilterAdapter(this, getContext());
         LinearLayoutManager layoutManager
@@ -73,30 +70,34 @@ public class FilterListFragment extends BaseEditFragment {
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_FILTER;
-        activity.filterListFragment.setCurrentBitmap(activity.getMainBit());
-        activity.mainImage.setImageBitmap(activity.getMainBit());
-        activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-        activity.mainImage.setScaleEnabled(false);
-        activity.bannerFlipper.showNext();
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_FILTER;
+            getActivityInstance().filterListFragment.setCurrentBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            getActivityInstance().mainImage.setScaleEnabled(false);
+            getActivityInstance().bannerFlipper.showNext();
+        }
     }
 
     @Override
     public void backToMain() {
-        currentBitmap = activity.getMainBit();
-        filterBitmap = null;
-        activity.mainImage.setImageBitmap(activity.getMainBit());
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(0);
-        activity.mainImage.setScaleEnabled(true);
-        activity.bannerFlipper.showPrevious();
+        if (getActivityInstance() != null) {
+            currentBitmap = getActivityInstance().getMainBit();
+            filterBitmap = null;
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().mode = EditImageActivity.MODE_NONE;
+            getActivityInstance().bottomGallery.setCurrentItem(0);
+            getActivityInstance().mainImage.setScaleEnabled(true);
+            getActivityInstance().bannerFlipper.showPrevious();
+        }
     }
 
     public void applyFilterImage() {
-        if (currentBitmap == activity.getMainBit()) {
-            backToMain();
-        } else {
-            activity.changeMainBitmap(filterBitmap, true);
+        if (getActivityInstance() != null) {
+            if (currentBitmap != getActivityInstance().getMainBit()) {
+                getActivityInstance().changeMainBitmap(filterBitmap, true);
+            }
             backToMain();
         }
     }
@@ -115,17 +116,23 @@ public class FilterListFragment extends BaseEditFragment {
     }
 
     public void enableFilter(int filterIndex) {
-        if (filterIndex == NULL_FILTER_INDEX) {
-            activity.mainImage.setImageBitmap(activity.getMainBit());
-            currentBitmap = activity.getMainBit();
+        if (filterIndex == NULL_FILTER_INDEX && getActivityInstance() != null) {
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
+            currentBitmap = getActivityInstance().getMainBit();
             return;
         }
 
         Disposable applyFilterDisposable = applyFilter(filterIndex)
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(subscriber -> loadingDialog.show())
-                .doFinally(() -> loadingDialog.dismiss())
+                .doOnSubscribe(subscriber -> {
+                    if (getActivityInstance() != null)
+                        getActivityInstance().showLoadingDialog();
+                })
+                .doFinally(() -> {
+                    if (getActivityInstance() != null)
+                        getActivityInstance().dismissLoadingDialog();
+                })
                 .subscribe(
                         this::updatePreviewWithFilter,
                         e -> showSaveErrorToast()
@@ -142,7 +149,8 @@ public class FilterListFragment extends BaseEditFragment {
         }
 
         filterBitmap = bitmapWithFilter;
-        activity.mainImage.setImageBitmap(filterBitmap);
+        if (getActivityInstance() != null)
+            getActivityInstance().mainImage.setImageBitmap(filterBitmap);
         currentBitmap = filterBitmap;
     }
 
@@ -152,10 +160,13 @@ public class FilterListFragment extends BaseEditFragment {
 
     private Single<Bitmap> applyFilter(int filterIndex) {
         return Single.fromCallable(() -> {
-
-            Bitmap srcBitmap = Bitmap.createBitmap(activity.getMainBit().copy(
-                    Bitmap.Config.RGB_565, true));
-            return PhotoProcessing.filterPhoto(srcBitmap, filterIndex);
+            Bitmap bitmap = null;
+            if (getActivityInstance() != null) {
+                Bitmap srcBitmap = Bitmap.createBitmap(getActivityInstance().getMainBit().copy(
+                        Bitmap.Config.RGB_565, true));
+                bitmap = PhotoProcessing.filterPhoto(srcBitmap, filterIndex);
+            }
+            return bitmap;
         });
     }
 

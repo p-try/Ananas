@@ -160,49 +160,67 @@ public class MainMenuFragment extends BaseEditFragment implements
     }
 
     private void onStickClick() {
-        activity.bottomGallery.setCurrentItem(StickerFragment.INDEX);
-        activity.stickerFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(StickerFragment.INDEX);
+            getActivityInstance().stickerFragment.onShow();
+        }
     }
 
     private void onFilterClick() {
-        activity.bottomGallery.setCurrentItem(FilterListFragment.INDEX);
-        activity.filterListFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(FilterListFragment.INDEX);
+            getActivityInstance().filterListFragment.onShow();
+        }
     }
 
     private void onCropClick() {
-        activity.bottomGallery.setCurrentItem(CropFragment.INDEX);
-        activity.cropFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(CropFragment.INDEX);
+            getActivityInstance().cropFragment.onShow();
+        }
     }
 
     private void onRotateClick() {
-        activity.bottomGallery.setCurrentItem(RotateFragment.INDEX);
-        activity.rotateFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(RotateFragment.INDEX);
+            getActivityInstance().rotateFragment.onShow();
+        }
     }
 
 
     private void onAddTextClick() {
-        activity.bottomGallery.setCurrentItem(AddTextFragment.INDEX);
-        activity.addTextFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(AddTextFragment.INDEX);
+            getActivityInstance().addTextFragment.onShow();
+        }
     }
 
     private void onPaintClick() {
-        activity.bottomGallery.setCurrentItem(PaintFragment.INDEX);
-        activity.paintFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(PaintFragment.INDEX);
+            getActivityInstance().paintFragment.onShow();
+        }
     }
 
     private void onBeautyClick() {
-        activity.bottomGallery.setCurrentItem(BeautyFragment.INDEX);
-        activity.beautyFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(BeautyFragment.INDEX);
+            getActivityInstance().beautyFragment.onShow();
+        }
     }
 
     private void onBrightnessClick() {
-        activity.bottomGallery.setCurrentItem(BrightnessFragment.INDEX);
-        activity.brightnessFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(BrightnessFragment.INDEX);
+            getActivityInstance().brightnessFragment.onShow();
+        }
     }
 
     private void onContrastClick() {
-        activity.bottomGallery.setCurrentItem(SaturationFragment.INDEX);
-        activity.saturationFragment.onShow();
+        if (getActivityInstance() != null) {
+            getActivityInstance().bottomGallery.setCurrentItem(SaturationFragment.INDEX);
+            getActivityInstance().saturationFragment.onShow();
+        }
     }
 
     @Override

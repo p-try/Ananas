@@ -65,8 +65,8 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
         super.onViewCreated(view, savedInstanceState);
 
         flipper = view.findViewById(R.id.flipper);
-        flipper.setInAnimation(activity, R.anim.in_bottom_to_top);
-        flipper.setOutAnimation(activity, R.anim.out_bottom_to_top);
+        flipper.setInAnimation(view.getContext(), R.anim.in_bottom_to_top);
+        flipper.setOutAnimation(view.getContext(), R.anim.out_bottom_to_top);
 
         RecyclerView typeList = view.findViewById(R.id.stickers_type_list);
         typeList.setHasFixedSize(true);
@@ -98,9 +98,11 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
 
     @Override
     public void onShow() {
-        activity.mode = MODE_STICKERS;
-        activity.bannerFlipper.showNext();
-        activity.stickerView.setVisibility(View.VISIBLE);
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = MODE_STICKERS;
+            getActivityInstance().bannerFlipper.showNext();
+            getActivityInstance().stickerView.setVisibility(View.VISIBLE);
+        }
     }
 
     public void swipToStickerDetails(String path, int stickerCount) {
@@ -112,8 +114,8 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
     public void onStickerSelected(String path) {
         int imageKey = getResources().getIdentifier(path, "drawable", getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageKey);
-
-        activity.stickerView.addBitImage(bitmap);
+        if (getActivityInstance() != null)
+            getActivityInstance().stickerView.addBitImage(bitmap);
     }
 
     private final class BackToMenuClick implements OnClickListener {
@@ -131,62 +133,79 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
 
     @Override
     public void backToMain() {
-        activity.mode = MODE_NONE;
-        activity.bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
-        activity.stickerView.clear();
-        activity.stickerView.setVisibility(View.GONE);
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = MODE_NONE;
+            getActivityInstance().bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
+            getActivityInstance().stickerView.clear();
+            getActivityInstance().stickerView.setVisibility(View.GONE);
+            getActivityInstance().bannerFlipper.showPrevious();
+        }
         flipper.showPrevious();
-        activity.bannerFlipper.showPrevious();
     }
 
     public void applyStickers() {
         compositeDisposable.clear();
+        if (getActivityInstance() != null) {
+            Disposable saveStickerDisposable = applyStickerToImage(getActivityInstance().getMainBit())
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe(subscriber -> {
+                        if (getActivityInstance() != null)
+                            getActivityInstance().showLoadingDialog();
+                    })
+                    .doFinally(() -> {
+                        if (getActivityInstance() != null)
+                            getActivityInstance().dismissLoadingDialog();
+                    })
+                    .subscribe(bitmap -> {
+                        if (bitmap == null) {
+                            return;
+                        }
+                        if (getActivityInstance() != null) {
+                            getActivityInstance().stickerView.clear();
+                            getActivityInstance().changeMainBitmap(bitmap, true);
+                            getActivityInstance().stickerFragment.backToMain();
+                        }
+                    }, e -> {
+                        if (getActivityInstance() != null)
+                            Toast.makeText(getActivityInstance(), R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
+                    });
 
-        Disposable saveStickerDisposable = applyStickerToImage(activity.getMainBit())
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(subscriber -> activity.showLoadingDialog())
-                .doFinally(() -> activity.dismissLoadingDialog())
-                .subscribe(bitmap -> {
-                    if (bitmap == null) {
-                        return;
-                    }
 
-                    activity.stickerView.clear();
-                    activity.changeMainBitmap(bitmap, true);
-                    activity.stickerFragment.backToMain();
-                }, e -> {
-                    Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
-                });
-
-        compositeDisposable.add(saveStickerDisposable);
+            compositeDisposable.add(saveStickerDisposable);
+        }
     }
 
     private Single<Bitmap> applyStickerToImage(Bitmap mainBitmap) {
         return Single.fromCallable(() -> {
-            Matrix touchMatrix = activity.mainImage.getImageViewMatrix();
+            Bitmap resultBitmap = null;
+            if (getActivityInstance() != null) {
+                Matrix touchMatrix = getActivityInstance().mainImage.getImageViewMatrix();
 
-            Bitmap resultBitmap = Bitmap.createBitmap(mainBitmap).copy(
-                    Bitmap.Config.ARGB_8888, true);
-            Canvas canvas = new Canvas(resultBitmap);
+                resultBitmap = Bitmap.createBitmap(mainBitmap).copy(
+                        Bitmap.Config.ARGB_8888, true);
+                Canvas canvas = new Canvas(resultBitmap);
 
-            float[] data = new float[9];
-            touchMatrix.getValues(data);
-            Matrix3 cal = new Matrix3(data);
-            Matrix3 inverseMatrix = cal.inverseMatrix();
-            Matrix m = new Matrix();
-            m.setValues(inverseMatrix.getValues());
-            handleStickerImage(canvas, m);
+                float[] data = new float[9];
+                touchMatrix.getValues(data);
+                Matrix3 cal = new Matrix3(data);
+                Matrix3 inverseMatrix = cal.inverseMatrix();
+                Matrix m = new Matrix();
+                m.setValues(inverseMatrix.getValues());
+                handleStickerImage(canvas, m);
+            }
             return resultBitmap;
         });
     }
 
     private void handleStickerImage(Canvas canvas, Matrix m) {
-        LinkedHashMap<Integer, StickerItem> addItems = activity.stickerView.getBank();
-        for (Integer id : addItems.keySet()) {
-            StickerItem item = addItems.get(id);
-            item.matrix.postConcat(m);
-            canvas.drawBitmap(item.bitmap, item.matrix, null);
+        if (getActivityInstance() != null) {
+            LinkedHashMap<Integer, StickerItem> addItems = getActivityInstance().stickerView.getBank();
+            for (Integer id : addItems.keySet()) {
+                StickerItem item = addItems.get(id);
+                item.matrix.postConcat(m);
+                canvas.drawBitmap(item.bitmap, item.matrix, null);
+            }
         }
     }
 

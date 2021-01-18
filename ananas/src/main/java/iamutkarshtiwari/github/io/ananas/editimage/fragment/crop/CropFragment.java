@@ -1,5 +1,6 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment.crop;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -21,6 +22,8 @@ import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.Objects;
+
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
@@ -40,7 +43,6 @@ public class CropFragment extends BaseEditFragment {
     private static int UNSELECTED_COLOR = R.color.text_color_gray_3;
 
     private CropImageView cropPanel;
-    private OnLoadingDialogListener loadingDialogListener;
 
     private CropRationClick cropRatioClick = new CropRationClick();
     private TextView selectedTextView;
@@ -74,20 +76,22 @@ public class CropFragment extends BaseEditFragment {
 
         RatioText[] ratioTextList = RatioText.values();
         for (int i = 0; i < ratioTextList.length; i++) {
-            TextView text = new TextView(activity);
-            toggleButtonStatus(text, false);
-            text.setTextSize(15);
-            text.setAllCaps(true);
-            text.setTypeface(text.getTypeface(), Typeface.BOLD);
-            text.setText(getResources().getText(ratioTextList[i].getRatioTextId()));
-            ratioList.addView(text, params);
+            if (getActivityInstance() != null) {
+                TextView text = new TextView(getActivityInstance());
+                toggleButtonStatus(text, false);
+                text.setTextSize(15);
+                text.setAllCaps(true);
+                text.setTypeface(text.getTypeface(), Typeface.BOLD);
+                text.setText(getResources().getText(ratioTextList[i].getRatioTextId()));
+                ratioList.addView(text, params);
 
-            if (i == 0) {
-                selectedTextView = text;
+                if (i == 0) {
+                    selectedTextView = text;
+                }
+
+                text.setTag(ratioTextList[i]);
+                text.setOnClickListener(cropRatioClick);
             }
-
-            text.setTag(ratioTextList[i]);
-            text.setOnClickListener(cropRatioClick);
         }
         toggleButtonStatus(selectedTextView, true);
     }
@@ -107,8 +111,10 @@ public class CropFragment extends BaseEditFragment {
             if (ratioText == RatioText.FREE) {
                 cropPanel.setFixedAspectRatio(false);
             } else if (ratioText == RatioText.FIT_IMAGE) {
-                Bitmap currentBmp = activity.getMainBit();
-                cropPanel.setAspectRatio(currentBmp.getWidth(), currentBmp.getHeight());
+                if (getActivityInstance() != null) {
+                    Bitmap currentBmp = getActivityInstance().getMainBit();
+                    cropPanel.setAspectRatio(currentBmp.getWidth(), currentBmp.getHeight());
+                }
             } else {
                 AspectRatio aspectRatio = ratioText.getAspectRatio();
                 cropPanel.setAspectRatio(aspectRatio.getAspectX(), aspectRatio.getAspectY());
@@ -117,20 +123,21 @@ public class CropFragment extends BaseEditFragment {
     }
 
     private void toggleButtonStatus(TextView view, boolean isActive) {
-        view.setTextColor(getColorFromRes((isActive) ? SELECTED_COLOR : UNSELECTED_COLOR));
+        view.setTextColor(getColorFromRes(view.getContext(), (isActive) ? SELECTED_COLOR : UNSELECTED_COLOR));
         view.setTypeface((isActive) ? Typeface.DEFAULT_BOLD : Typeface.DEFAULT);
     }
 
-    private int getColorFromRes(@ColorRes int resId) {
-        return ContextCompat.getColor(activity, resId);
+    private int getColorFromRes(Context context, @ColorRes int resId) {
+        return ContextCompat.getColor(context, resId);
     }
 
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        loadingDialogListener = activity;
-        this.cropPanel = activity.cropPanel;
+        if (getActivityInstance() != null) {
+            this.cropPanel = getActivityInstance().cropPanel;
+        }
 
         View backToMenu = view.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());
@@ -141,17 +148,19 @@ public class CropFragment extends BaseEditFragment {
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_CROP;
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_CROP;
 
-        activity.mainImage.setVisibility(View.GONE);
-        cropPanel.setVisibility(View.VISIBLE);
-        activity.mainImage.setImageBitmap(activity.getMainBit());
-        activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-        activity.mainImage.setScaleEnabled(false);
+            getActivityInstance().mainImage.setVisibility(View.GONE);
+            cropPanel.setVisibility(View.VISIBLE);
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            getActivityInstance().mainImage.setScaleEnabled(false);
 
-        activity.bannerFlipper.showNext();
-        cropPanel.setImageBitmap(activity.getMainBit());
-        cropPanel.setFixedAspectRatio(false);
+            getActivityInstance().bannerFlipper.showNext();
+            cropPanel.setImageBitmap(getActivityInstance().getMainBit());
+            cropPanel.setFixedAspectRatio(false);
+        }
     }
 
 
@@ -165,18 +174,20 @@ public class CropFragment extends BaseEditFragment {
 
     @Override
     public void backToMain() {
-        activity.mode = EditImageActivity.MODE_NONE;
-        cropPanel.setVisibility(View.GONE);
-        activity.mainImage.setVisibility(View.VISIBLE);
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_NONE;
+            cropPanel.setVisibility(View.GONE);
+            getActivityInstance().mainImage.setVisibility(View.VISIBLE);
 
-        activity.mainImage.setScaleEnabled(true);
-        activity.bottomGallery.setCurrentItem(0);
+            getActivityInstance().mainImage.setScaleEnabled(true);
+            getActivityInstance().bottomGallery.setCurrentItem(0);
 
-        if (selectedTextView != null) {
-            selectedTextView.setTextColor(getColorFromRes(UNSELECTED_COLOR));
+            if (selectedTextView != null) {
+                selectedTextView.setTextColor(getColorFromRes(selectedTextView.getContext(), UNSELECTED_COLOR));
+            }
+
+            getActivityInstance().bannerFlipper.showPrevious();
         }
-
-        activity.bannerFlipper.showPrevious();
     }
 
 
@@ -184,10 +195,17 @@ public class CropFragment extends BaseEditFragment {
         disposables.add(getCroppedBitmap()
                 .subscribeOn(AndroidSchedulers.mainThread())
                 .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe(subscriber -> loadingDialogListener.showLoadingDialog())
-                .doFinally(() -> loadingDialogListener.dismissLoadingDialog())
+                .doOnSubscribe(subscriber -> {
+                    if (getActivityInstance() != null)
+                        getActivityInstance().showLoadingDialog();
+                })
+                .doFinally(() -> {
+                    if (getActivityInstance() != null)
+                        getActivityInstance().dismissLoadingDialog();
+                })
                 .subscribe(bitmap -> {
-                    activity.changeMainBitmap(bitmap, true);
+                    if (getActivityInstance() != null)
+                        getActivityInstance().changeMainBitmap(bitmap, true);
                     backToMain();
                 }, e -> {
                     e.printStackTrace();
