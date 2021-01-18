@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 
-class ImageEditorIntentBuilder @JvmOverloads private constructor(private val context: Context,
+class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Context,
                                                                  private val sourcePath: String?,
                                                                  private val outputPath: String?,
                                                                  private val intent: Intent = Intent(
@@ -14,7 +14,7 @@ class ImageEditorIntentBuilder @JvmOverloads private constructor(private val con
 ) {
     private var sourceUri: Uri? = null
 
-    @JvmOverloads private constructor(context: Context,
+    @JvmOverloads constructor(context: Context,
                               sourceUri: Uri,
                               outputPath: String?,
                               intent: Intent = Intent(
@@ -141,37 +141,5 @@ class ImageEditorIntentBuilder @JvmOverloads private constructor(private val con
         const val FORCE_PORTRAIT = "force_portrait"
         const val EDITOR_TITLE = "editor_title"
         const val SUPPORT_ACTION_BAR_VISIBILITY = "support_action_bar_visibility"
-
-        fun getImageEditorIntent(context: Context, imageLocation: Uri, outputPath: String): Intent {
-            return ImageEditorIntentBuilder(context, imageLocation, outputPath)
-                    .withAddText() // Add the features you need
-                    .withPaintFeature()
-                    .withFilterFeature()
-                    .withRotateFeature()
-                    .withCropFeature()
-                    .withBrightnessFeature()
-                    .withSaturationFeature()
-                    .withBeautyFeature()
-                    .withStickerFeature()
-                    .forcePortrait(true) // Add this to force portrait mode (It's set to false by default)
-                    .setSupportActionBarVisibility(false) // To hide app's default action bar
-                    .build()
-        }
-
-        fun getImageEditorIntent(context: Context, imageLocation: String, outputPath: String): Intent {
-            return ImageEditorIntentBuilder(context, imageLocation, outputPath)
-                    .withAddText() // Add the features you need
-                    .withPaintFeature()
-                    .withFilterFeature()
-                    .withRotateFeature()
-                    .withCropFeature()
-                    .withBrightnessFeature()
-                    .withSaturationFeature()
-                    .withBeautyFeature()
-                    .withStickerFeature()
-                    .forcePortrait(true) // Add this to force portrait mode (It's set to false by default)
-                    .setSupportActionBarVisibility(false) // To hide app's default action bar
-                    .build()
-        }
     }
 }
