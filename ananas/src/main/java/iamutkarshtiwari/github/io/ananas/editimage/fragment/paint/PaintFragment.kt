@@ -84,21 +84,27 @@ class PaintFragment : BaseEditFragment(), View.OnClickListener {
     }
 
     override fun backToMain() {
-        activity.bottomGallery.currentItem = MainMenuFragment.INDEX
-        activity.mainImage.visibility = VISIBLE
-        activity.paintView.reset()
-        activity.paintView.visibility = View.GONE
-        activity.mode = EditImageActivity.MODE_NONE
-        activity.bannerFlipper.showPrevious()
+        activityInstance?.apply {
+            bottomGallery.currentItem = MainMenuFragment.INDEX
+            mainImage.visibility = VISIBLE
+            paintView.reset()
+            paintView.visibility = View.GONE
+            mode = EditImageActivity.MODE_NONE
+            bannerFlipper.showPrevious()
+        }
+
 
         viewModel.resetToDefault()
     }
 
     override fun onShow() {
-        activity.mode = MODE_PAINT
-        activity.mainImage.setImageBitmap(activity.mainBit)
-        activity.paintView.visibility = VISIBLE
-        activity.bannerFlipper.showNext()
+        activityInstance?.apply {
+            mode = MODE_PAINT
+            mainImage.setImageBitmap(mainBit)
+            paintView.visibility = VISIBLE
+            bannerFlipper.showNext()
+        }
+
     }
 
     private fun toggleButtons() {
@@ -112,39 +118,45 @@ class PaintFragment : BaseEditFragment(), View.OnClickListener {
 
     fun savePaintImage() {
         compositeDisposable.clear()
-        val applyPaintDisposable = applyPaint(activity.mainBit)
-                .flatMap { bitmap: Bitmap? ->
-                    if (bitmap == null) {
-                        return@flatMap Single.error<Bitmap>(Throwable("Error occurred while applying paint"))
-                    } else {
-                        return@flatMap Single.just(bitmap)
+        activityInstance?.apply {
+            val applyPaintDisposable = applyPaint(mainBit)
+                    .flatMap { bitmap: Bitmap? ->
+                        if (bitmap == null) {
+                            return@flatMap Single.error<Bitmap>(Throwable("Error occurred while applying paint"))
+                        } else {
+                            return@flatMap Single.just(bitmap)
+                        }
                     }
-                }
-                .subscribeOn(Schedulers.computation())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnSubscribe { activity.showLoadingDialog() }
-                .doFinally { activity.dismissLoadingDialog() }
-                .subscribe { bitmap: Bitmap? ->
-                    activity.paintView.reset()
-                    activity.changeMainBitmap(bitmap, true)
-                    backToMain()
-                }
-        compositeDisposable.add(applyPaintDisposable)
+                    .subscribeOn(Schedulers.computation())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnSubscribe { activityInstance?.showLoadingDialog() }
+                    .doFinally { activityInstance?.dismissLoadingDialog() }
+                    .subscribe { bitmap: Bitmap? ->
+                        activityInstance?.paintView?.reset()
+                        activityInstance?.changeMainBitmap(bitmap, true)
+                        backToMain()
+                    }
+            compositeDisposable.add(applyPaintDisposable)
+        }
     }
 
     private fun applyPaint(mainBitmap: Bitmap): Single<Bitmap?> {
         return Single.fromCallable {
-            val touchMatrix: Matrix = activity.mainImage.imageViewMatrix
-            val resultBit = Bitmap.createBitmap(mainBitmap).copy(
-                    Bitmap.Config.ARGB_8888, true)
-            val canvas = Canvas(resultBit)
-            val data = FloatArray(9)
-            touchMatrix.getValues(data)
-            val cal = Matrix3(data)
-            val inverseMatrix = cal.inverseMatrix()
-            val matrix = Matrix()
-            matrix.setValues(inverseMatrix.values)
-            handleImage(canvas, matrix)
+            var resultBit: Bitmap? = null
+            activityInstance?.apply {
+                val touchMatrix: Matrix? = this.mainImage?.imageViewMatrix
+                resultBit = Bitmap.createBitmap(mainBitmap).copy(Bitmap.Config.ARGB_8888, true)
+                resultBit?.apply {
+                    val canvas = Canvas(this)
+                    val data = FloatArray(9)
+                    touchMatrix?.getValues(data)
+                    val cal = Matrix3(data)
+                    val inverseMatrix = cal.inverseMatrix()
+                    val matrix = Matrix()
+                    matrix.setValues(inverseMatrix.values)
+                    handleImage(canvas, matrix)
+                }
+            }
             resultBit
         }
     }
@@ -159,8 +171,8 @@ class PaintFragment : BaseEditFragment(), View.OnClickListener {
         canvas.save()
         canvas.translate(dx.toFloat(), dy.toFloat())
         canvas.scale(scale_x, scale_y)
-        if (activity.paintView.paintBit != null) {
-            canvas.drawBitmap(activity.paintView.paintBit, 0f, 0f, null)
+        activityInstance?.paintView?.paintBit?.apply {
+            canvas.drawBitmap(this, 0f, 0f, null)
         }
         canvas.restore()
     }

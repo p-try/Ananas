@@ -69,7 +69,6 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
         public void onClick(View v) {
             String data = (String) v.getTag();
             mCallback.onStickerSelected(data);
-//            stickerFragment.selectedStickerItem(data);
         }
     }
 

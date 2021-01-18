@@ -25,7 +25,6 @@ public class SaturationFragment extends BaseEditFragment {
     public static final int INDEX = ModuleConfig.INDEX_CONTRAST;
     private static final int INITIAL_SATURATION = 100;
     public static final String TAG = SaturationFragment.class.getName();
-    private SaturationView mSaturationView;
     private SeekBar mSeekBar;
 
     public static SaturationFragment newInstance() {
@@ -41,8 +40,6 @@ public class SaturationFragment extends BaseEditFragment {
     @Override
     public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
 
-        this.mSaturationView = activity.saturationView;
-
         View mBackToMenu = view.findViewById(R.id.back_to_main);
         mBackToMenu.setOnClickListener(new SaturationFragment.BackToMenuClick());
 
@@ -51,7 +48,8 @@ public class SaturationFragment extends BaseEditFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float value = progress - (seekBar.getMax() / 2);
-                activity.saturationView.setSaturation(value / 10f);
+                if (getActivityInstance() != null)
+                getActivityInstance().saturationView.setSaturation(value / 10f);
             }
 
             @Override
@@ -69,25 +67,29 @@ public class SaturationFragment extends BaseEditFragment {
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_SATURATION;
-        activity.mainImage.setImageBitmap(activity.getMainBit());
-        activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-        activity.mainImage.setVisibility(View.GONE);
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_SATURATION;
+            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            getActivityInstance().mainImage.setVisibility(View.GONE);
 
-        activity.saturationView.setImageBitmap(activity.getMainBit());
-        activity.saturationView.setVisibility(View.VISIBLE);
+            getActivityInstance().saturationView.setImageBitmap(getActivityInstance().getMainBit());
+            getActivityInstance().saturationView.setVisibility(View.VISIBLE);
+            getActivityInstance().bannerFlipper.showNext();
+        }
         initView();
-        activity.bannerFlipper.showNext();
     }
 
     @Override
     public void backToMain() {
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(0);
-        activity.mainImage.setVisibility(View.VISIBLE);
-        activity.saturationView.setVisibility(View.GONE);
-        activity.bannerFlipper.showPrevious();
-        activity.saturationView.setSaturation(INITIAL_SATURATION);
+        if (getActivityInstance() != null) {
+            getActivityInstance().mode = EditImageActivity.MODE_NONE;
+            getActivityInstance().bottomGallery.setCurrentItem(0);
+            getActivityInstance().mainImage.setVisibility(View.VISIBLE);
+            getActivityInstance().saturationView.setVisibility(View.GONE);
+            getActivityInstance().bannerFlipper.showPrevious();
+            getActivityInstance().saturationView.setSaturation(INITIAL_SATURATION);
+        }
     }
 
     public void applySaturation() {
@@ -95,8 +97,11 @@ public class SaturationFragment extends BaseEditFragment {
             backToMain();
             return;
         }
-        Bitmap bitmap = ((BitmapDrawable) mSaturationView.getDrawable()).getBitmap();
-        activity.changeMainBitmap(Utils.saturationBitmap(bitmap, mSaturationView.getSaturation()), true);
+        if (getActivityInstance() != null) {
+            Bitmap bitmap = ((BitmapDrawable) getActivityInstance().saturationView.getDrawable()).getBitmap();
+            getActivityInstance().changeMainBitmap(Utils.saturationBitmap(bitmap,
+                    getActivityInstance().saturationView.getSaturation()), true);
+        }
         backToMain();
     }
 
