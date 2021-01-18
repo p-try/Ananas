@@ -142,7 +142,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void editImageClick() {
         File outputFile = FileUtils.genEditFile();
         try {
-            Intent intent = ImageEditorIntentBuilder.Companion.getImageEditorIntent(this, path, outputFile.getAbsolutePath());
+            Intent intent = new ImageEditorIntentBuilder(this, path, outputFile.getAbsolutePath())
+                    .withAddText() // Add the features you need
+                    .withPaintFeature()
+                    .withFilterFeature()
+                    .withRotateFeature()
+                    .withCropFeature()
+                    .withBrightnessFeature()
+                    .withSaturationFeature()
+                    .withBeautyFeature()
+                    .withStickerFeature()
+                    .forcePortrait(true) // Add this to force portrait mode (It's set to false by default)
+                    .setSupportActionBarVisibility(false) // To hide app's default action bar
+                    .build();
             startActivityForResult(intent, ACTION_REQUEST_EDITIMAGE);
         } catch (Exception e) {
             Toast.makeText(this, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
