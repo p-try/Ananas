@@ -38,7 +38,7 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Bundle intentBundle = getArguments();
 

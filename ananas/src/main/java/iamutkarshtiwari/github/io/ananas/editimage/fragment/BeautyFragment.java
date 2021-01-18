@@ -59,7 +59,7 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
     }
 
     @Override
-    public void onViewCreated(@NonNull @NotNull View view, @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
         smoothValueBar = view.findViewById(R.id.smooth_value_bar);
