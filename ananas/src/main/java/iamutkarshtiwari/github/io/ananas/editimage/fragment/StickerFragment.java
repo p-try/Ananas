@@ -22,6 +22,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.LinkedHashMap;
 
 import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.StickerAdapter;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.StickerTypeAdapter;
@@ -92,10 +93,11 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
 
     @Override
     public void onShow() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().mode = MODE_STICKERS;
-            getActivityInstance().bannerFlipper.showNext();
-            getActivityInstance().stickerView.setVisibility(View.VISIBLE);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = MODE_STICKERS;
+            activity.bannerFlipper.showNext();
+            activity.stickerView.setVisibility(View.VISIBLE);
         }
     }
 
@@ -108,8 +110,9 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
     public void onStickerSelected(String path) {
         int imageKey = getResources().getIdentifier(path, "drawable", getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageKey);
-        if (getActivityInstance() != null)
-            getActivityInstance().stickerView.addBitImage(bitmap);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null)
+            activity.stickerView.addBitImage(bitmap);
     }
 
     private final class BackToMenuClick implements OnClickListener {
@@ -127,42 +130,48 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
 
     @Override
     public void backToMain() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().mode = MODE_NONE;
-            getActivityInstance().bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
-            getActivityInstance().stickerView.clear();
-            getActivityInstance().stickerView.setVisibility(View.GONE);
-            getActivityInstance().bannerFlipper.showPrevious();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = MODE_NONE;
+            activity.bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
+            activity.stickerView.clear();
+            activity.stickerView.setVisibility(View.GONE);
+            activity.bannerFlipper.showPrevious();
         }
         flipper.showPrevious();
     }
 
     public void applyStickers() {
         compositeDisposable.clear();
-        if (getActivityInstance() != null) {
-            Disposable saveStickerDisposable = applyStickerToImage(getActivityInstance().getMainBit())
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            Disposable saveStickerDisposable = applyStickerToImage(activity.getMainBit())
                     .subscribeOn(Schedulers.computation())
                     .observeOn(AndroidSchedulers.mainThread())
                     .doOnSubscribe(subscriber -> {
-                        if (getActivityInstance() != null)
-                            getActivityInstance().showLoadingDialog();
+                        EditImageActivity activityInstance;
+                        if ((activityInstance = getActivityInstance()) != null)
+                            activityInstance.showLoadingDialog();
                     })
                     .doFinally(() -> {
-                        if (getActivityInstance() != null)
-                            getActivityInstance().dismissLoadingDialog();
+                        EditImageActivity activityInstance;
+                        if ((activityInstance = getActivityInstance()) != null)
+                            activityInstance.dismissLoadingDialog();
                     })
                     .subscribe(bitmap -> {
                         if (bitmap == null) {
                             return;
                         }
-                        if (getActivityInstance() != null) {
-                            getActivityInstance().stickerView.clear();
-                            getActivityInstance().changeMainBitmap(bitmap, true);
-                            getActivityInstance().stickerFragment.backToMain();
+                        EditImageActivity activityInstance;
+                        if ((activityInstance = getActivityInstance()) != null) {
+                            activityInstance.stickerView.clear();
+                            activityInstance.changeMainBitmap(bitmap, true);
+                            activityInstance.stickerFragment.backToMain();
                         }
                     }, e -> {
-                        if (getActivityInstance() != null)
-                            Toast.makeText(getActivityInstance(), R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
+                        EditImageActivity activityInstance;
+                        if ((activityInstance = getActivityInstance()) != null)
+                            Toast.makeText(activityInstance, R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
                     });
 
 
@@ -173,8 +182,9 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
     private Single<Bitmap> applyStickerToImage(Bitmap mainBitmap) {
         return Single.fromCallable(() -> {
             Bitmap resultBitmap = null;
-            if (getActivityInstance() != null) {
-                Matrix touchMatrix = getActivityInstance().mainImage.getImageViewMatrix();
+            EditImageActivity activity;
+            if ((activity = getActivityInstance()) != null) {
+                Matrix touchMatrix = activity.mainImage.getImageViewMatrix();
 
                 resultBitmap = Bitmap.createBitmap(mainBitmap).copy(
                         Bitmap.Config.ARGB_8888, true);
@@ -193,8 +203,9 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
     }
 
     private void handleStickerImage(Canvas canvas, Matrix m) {
-        if (getActivityInstance() != null) {
-            LinkedHashMap<Integer, StickerItem> addItems = getActivityInstance().stickerView.getBank();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            LinkedHashMap<Integer, StickerItem> addItems = activity.stickerView.getBank();
             for (Integer id : addItems.keySet()) {
                 StickerItem item = addItems.get(id);
                 item.matrix.postConcat(m);

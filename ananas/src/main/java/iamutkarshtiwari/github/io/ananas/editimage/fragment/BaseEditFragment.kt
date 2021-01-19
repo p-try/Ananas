@@ -1,19 +1,17 @@
-package iamutkarshtiwari.github.io.ananas.editimage.fragment;
+package iamutkarshtiwari.github.io.ananas.editimage.fragment
 
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.Fragment
+import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity
 
-import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
+abstract class BaseEditFragment : Fragment() {
+    protected val activityInstance: EditImageActivity?
+        get() {
+            return activity?.let { instance ->
+                if (instance is EditImageActivity) instance
+                else null
+            }
+        }
 
-public abstract class BaseEditFragment extends Fragment {
-
-    protected EditImageActivity getActivityInstance() {
-        if (getActivity() == null) return null;
-        else return (EditImageActivity) getActivity();
-    }
-
-    public abstract void onShow();
-
-    public abstract void backToMain();
-
+    abstract fun onShow()
+    abstract fun backToMain()
 }
-
