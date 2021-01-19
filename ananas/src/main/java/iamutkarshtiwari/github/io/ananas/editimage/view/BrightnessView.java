@@ -5,10 +5,11 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.util.AttributeSet;
 
-import java.util.concurrent.TimeUnit;
-
 import androidx.annotation.FloatRange;
 import androidx.appcompat.widget.AppCompatImageView;
+
+import java.util.concurrent.TimeUnit;
+
 import io.reactivex.Observable;
 import io.reactivex.ObservableSource;
 import io.reactivex.android.schedulers.AndroidSchedulers;

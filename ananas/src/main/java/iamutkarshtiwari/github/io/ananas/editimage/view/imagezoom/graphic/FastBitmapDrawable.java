@@ -1,6 +1,5 @@
 package iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.graphic;
 
-import java.io.InputStream;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -9,6 +8,8 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.drawable.Drawable;
+
+import java.io.InputStream;
 
 /**
  * Fast bitmap drawable. Does not support states. it only

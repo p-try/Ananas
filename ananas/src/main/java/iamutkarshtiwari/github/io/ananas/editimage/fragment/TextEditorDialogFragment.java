@@ -13,8 +13,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
-
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,6 +21,7 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.ColorPickerAdapter;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnTextEditorListener;
@@ -74,12 +73,12 @@ public class TextEditorDialogFragment extends DialogFragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.dialog_edit_text_sticker, container, false);
     }
 
     @Override
-    public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         addTextEditText = view.findViewById(R.id.add_text_edit_text);
         addTextEditText.requestFocus();

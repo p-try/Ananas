@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.jetbrains.annotations.NotNull;
-
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
 
@@ -50,16 +50,16 @@ public class StickerTypeAdapter extends RecyclerView.Adapter<ViewHolder> {
         return 1;
     }
 
-    @NotNull
+    @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NotNull ViewGroup parent, int viewtype) {
+    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewtype) {
         View view = LayoutInflater.from(parent.getContext()).inflate(
                 R.layout.view_sticker_type_item, parent, false);
         return new ImageHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NotNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ImageHolder imageHolder = (ImageHolder) holder;
         String name = stickerPathName[position];
         imageHolder.text.setText(name);

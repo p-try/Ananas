@@ -22,6 +22,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import androidx.activity.result.ActivityResultLauncher;
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
@@ -31,8 +32,6 @@ import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import org.jetbrains.annotations.NotNull;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -247,7 +246,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NotNull String permissions[], @NotNull int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
             if (!(grantResults.length > 0
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED)) {

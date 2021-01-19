@@ -20,15 +20,10 @@ import androidx.core.content.ContextCompat;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
 
-import org.jetbrains.annotations.NotNull;
-
-import java.util.Objects;
-
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.BaseEditFragment;
-import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -59,7 +54,7 @@ public class CropFragment extends BaseEditFragment {
     }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_edit_image_crop, null);
     }
