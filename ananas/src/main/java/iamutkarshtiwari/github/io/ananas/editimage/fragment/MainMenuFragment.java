@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 import org.jetbrains.annotations.NotNull;
 
 import iamutkarshtiwari.github.io.ananas.R;
+import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ImageEditorIntentBuilder;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.crop.CropFragment;
@@ -132,66 +133,75 @@ public class MainMenuFragment extends BaseEditFragment implements View.OnClickLi
     }
 
     private void onStickClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(StickerFragment.INDEX);
-            getActivityInstance().stickerFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(StickerFragment.INDEX);
+            activity.stickerFragment.onShow();
         }
     }
 
     private void onFilterClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(FilterListFragment.INDEX);
-            getActivityInstance().filterListFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(FilterListFragment.INDEX);
+            activity.filterListFragment.onShow();
         }
     }
 
     private void onCropClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(CropFragment.INDEX);
-            getActivityInstance().cropFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(CropFragment.INDEX);
+            activity.cropFragment.onShow();
         }
     }
 
     private void onRotateClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(RotateFragment.INDEX);
-            getActivityInstance().rotateFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(RotateFragment.INDEX);
+            activity.rotateFragment.onShow();
         }
     }
 
 
     private void onAddTextClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(AddTextFragment.INDEX);
-            getActivityInstance().addTextFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(AddTextFragment.INDEX);
+            activity.addTextFragment.onShow();
         }
     }
 
     private void onPaintClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(PaintFragment.INDEX);
-            getActivityInstance().paintFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(PaintFragment.INDEX);
+            activity.paintFragment.onShow();
         }
     }
 
     private void onBeautyClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(BeautyFragment.INDEX);
-            getActivityInstance().beautyFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(BeautyFragment.INDEX);
+            activity.beautyFragment.onShow();
         }
     }
 
     private void onBrightnessClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(BrightnessFragment.INDEX);
-            getActivityInstance().brightnessFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(BrightnessFragment.INDEX);
+            activity.brightnessFragment.onShow();
         }
     }
 
     private void onContrastClick() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().bottomGallery.setCurrentItem(SaturationFragment.INDEX);
-            getActivityInstance().saturationFragment.onShow();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.bottomGallery.setCurrentItem(SaturationFragment.INDEX);
+            activity.saturationFragment.onShow();
         }
     }
 }

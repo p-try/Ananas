@@ -1,5 +1,6 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
@@ -70,33 +71,36 @@ public class FilterListFragment extends BaseEditFragment {
 
     @Override
     public void onShow() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().mode = EditImageActivity.MODE_FILTER;
-            getActivityInstance().filterListFragment.setCurrentBitmap(getActivityInstance().getMainBit());
-            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
-            getActivityInstance().mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-            getActivityInstance().mainImage.setScaleEnabled(false);
-            getActivityInstance().bannerFlipper.showNext();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance())!= null) {
+            activity.mode = EditImageActivity.MODE_FILTER;
+            activity.filterListFragment.setCurrentBitmap(activity.getMainBit());
+            activity.mainImage.setImageBitmap(activity.getMainBit());
+            activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            activity.mainImage.setScaleEnabled(false);
+            activity.bannerFlipper.showNext();
         }
     }
 
     @Override
     public void backToMain() {
-        if (getActivityInstance() != null) {
-            currentBitmap = getActivityInstance().getMainBit();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance())!= null) {
+            currentBitmap = activity.getMainBit();
             filterBitmap = null;
-            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
-            getActivityInstance().mode = EditImageActivity.MODE_NONE;
-            getActivityInstance().bottomGallery.setCurrentItem(0);
-            getActivityInstance().mainImage.setScaleEnabled(true);
-            getActivityInstance().bannerFlipper.showPrevious();
+            activity.mainImage.setImageBitmap(activity.getMainBit());
+            activity.mode = EditImageActivity.MODE_NONE;
+            activity.bottomGallery.setCurrentItem(0);
+            activity.mainImage.setScaleEnabled(true);
+            activity.bannerFlipper.showPrevious();
         }
     }
 
     public void applyFilterImage() {
-        if (getActivityInstance() != null) {
-            if (currentBitmap != getActivityInstance().getMainBit()) {
-                getActivityInstance().changeMainBitmap(filterBitmap, true);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            if (currentBitmap != activity.getMainBit()) {
+                activity.changeMainBitmap(filterBitmap, true);
             }
             backToMain();
         }
@@ -122,9 +126,10 @@ public class FilterListFragment extends BaseEditFragment {
     }
 
     public void enableFilter(int filterIndex) {
-        if (filterIndex == NULL_FILTER_INDEX && getActivityInstance() != null) {
-            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
-            currentBitmap = getActivityInstance().getMainBit();
+        EditImageActivity activity;
+        if (filterIndex == NULL_FILTER_INDEX && (activity = getActivityInstance()) != null) {
+            activity.mainImage.setImageBitmap(activity.getMainBit());
+            currentBitmap = activity.getMainBit();
             return;
         }
 
@@ -134,12 +139,14 @@ public class FilterListFragment extends BaseEditFragment {
                 .subscribeOn(Schedulers.computation())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnSubscribe(subscriber -> {
-                    if (getActivityInstance() != null)
-                        getActivityInstance().showLoadingDialog();
+                    EditImageActivity activityInstance;
+                    if ((activityInstance = getActivityInstance()) != null)
+                        activityInstance.showLoadingDialog();
                 })
                 .doFinally(() -> {
-                    if (getActivityInstance() != null)
-                        getActivityInstance().dismissLoadingDialog();
+                    EditImageActivity activityInstance;
+                    if ((activityInstance = getActivityInstance()) != null)
+                        activityInstance.dismissLoadingDialog();
                 })
                 .subscribe(
                         this::updatePreviewWithFilter,
@@ -157,8 +164,9 @@ public class FilterListFragment extends BaseEditFragment {
         }
 
         filterBitmap = bitmapWithFilter;
-        if (getActivityInstance() != null)
-            getActivityInstance().mainImage.setImageBitmap(filterBitmap);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null)
+            activity.mainImage.setImageBitmap(filterBitmap);
         currentBitmap = filterBitmap;
     }
 
@@ -169,8 +177,9 @@ public class FilterListFragment extends BaseEditFragment {
     private Single<Bitmap> applyFilter(int filterIndex) {
         return Single.fromCallable(() -> {
             Bitmap bitmap = null;
-            if (getActivityInstance() != null) {
-                Bitmap srcBitmap = Bitmap.createBitmap(getActivityInstance().getMainBit().copy(
+            EditImageActivity activity;
+            if ((activity = getActivityInstance()) != null) {
+                Bitmap srcBitmap = Bitmap.createBitmap(activity.getMainBit().copy(
                         Bitmap.Config.RGB_565, true));
                 bitmap = PhotoProcessing.filterPhoto(srcBitmap, filterIndex);
             }

@@ -48,8 +48,9 @@ public class SaturationFragment extends BaseEditFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float value = progress - (seekBar.getMax() / 2);
-                if (getActivityInstance() != null)
-                getActivityInstance().saturationView.setSaturation(value / 10f);
+                EditImageActivity activity;
+                if ((activity = getActivityInstance()) != null)
+                    activity.saturationView.setSaturation(value / 10f);
             }
 
             @Override
@@ -67,28 +68,30 @@ public class SaturationFragment extends BaseEditFragment {
 
     @Override
     public void onShow() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().mode = EditImageActivity.MODE_SATURATION;
-            getActivityInstance().mainImage.setImageBitmap(getActivityInstance().getMainBit());
-            getActivityInstance().mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-            getActivityInstance().mainImage.setVisibility(View.GONE);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = EditImageActivity.MODE_SATURATION;
+            activity.mainImage.setImageBitmap(activity.getMainBit());
+            activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            activity.mainImage.setVisibility(View.GONE);
 
-            getActivityInstance().saturationView.setImageBitmap(getActivityInstance().getMainBit());
-            getActivityInstance().saturationView.setVisibility(View.VISIBLE);
-            getActivityInstance().bannerFlipper.showNext();
+            activity.saturationView.setImageBitmap(activity.getMainBit());
+            activity.saturationView.setVisibility(View.VISIBLE);
+            activity.bannerFlipper.showNext();
         }
         initView();
     }
 
     @Override
     public void backToMain() {
-        if (getActivityInstance() != null) {
-            getActivityInstance().mode = EditImageActivity.MODE_NONE;
-            getActivityInstance().bottomGallery.setCurrentItem(0);
-            getActivityInstance().mainImage.setVisibility(View.VISIBLE);
-            getActivityInstance().saturationView.setVisibility(View.GONE);
-            getActivityInstance().bannerFlipper.showPrevious();
-            getActivityInstance().saturationView.setSaturation(INITIAL_SATURATION);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = EditImageActivity.MODE_NONE;
+            activity.bottomGallery.setCurrentItem(0);
+            activity.mainImage.setVisibility(View.VISIBLE);
+            activity.saturationView.setVisibility(View.GONE);
+            activity.bannerFlipper.showPrevious();
+            activity.saturationView.setSaturation(INITIAL_SATURATION);
         }
     }
 
@@ -97,10 +100,11 @@ public class SaturationFragment extends BaseEditFragment {
             backToMain();
             return;
         }
-        if (getActivityInstance() != null) {
-            Bitmap bitmap = ((BitmapDrawable) getActivityInstance().saturationView.getDrawable()).getBitmap();
-            getActivityInstance().changeMainBitmap(Utils.saturationBitmap(bitmap,
-                    getActivityInstance().saturationView.getSaturation()), true);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            Bitmap bitmap = ((BitmapDrawable) activity.saturationView.getDrawable()).getBitmap();
+            activity.changeMainBitmap(Utils.saturationBitmap(bitmap,
+                    activity.saturationView.getSaturation()), true);
         }
         backToMain();
     }
