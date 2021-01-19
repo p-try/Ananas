@@ -29,6 +29,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.lifecycle.ViewModelProvider;
+
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
@@ -447,9 +448,30 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     protected void setLockScreenOrientation(boolean lock) {
-        if (Build.VERSION.SDK_INT >= 18) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
             setRequestedOrientation(lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        } else {
+            if (lock) {
+                switch (getWindowManager().getDefaultDisplay().getRotation()) {
+                    case Surface.ROTATION_0:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        break;
+                    case Surface.ROTATION_90:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        break;
+                    case Surface.ROTATION_180:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                        break;
+                    case Surface.ROTATION_270:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                        break;
+                }
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+            }
         }
     }
 
