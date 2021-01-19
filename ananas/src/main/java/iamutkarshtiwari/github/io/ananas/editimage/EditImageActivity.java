@@ -1,21 +1,17 @@
 package iamutkarshtiwari.github.io.ananas.editimage;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.view.Surface;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.TextView;
@@ -28,13 +24,10 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import com.theartofdev.edmodo.cropper.CropImageView;
 
 import org.jetbrains.annotations.NotNull;
-
-import java.util.LinkedHashMap;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -269,10 +262,13 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onResume() {
         super.onResume();
         // Lock orientation for this activity
+        // If isPortraitForced, set orientation to portrait, else, lock the orientation to current
+        // orientation of the device.
         if (isPortraitForced) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
@@ -456,28 +452,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     protected void setLockScreenOrientation(boolean lock) {
         if (Build.VERSION.SDK_INT >= 18) {
             setRequestedOrientation(lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-            return;
         }
-
-        if (lock) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.FROYO) {
-                switch (getWindowManager().getDefaultDisplay().getRotation()) {
-                    case Surface.ROTATION_0:
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                        break;
-                    case Surface.ROTATION_90:
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                        break;
-                    case Surface.ROTATION_180:
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-                        break;
-                    case Surface.ROTATION_270:
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-                        break;
-                }
-            }
-        } else
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
     }
 
     public void increaseOpTimes() {
