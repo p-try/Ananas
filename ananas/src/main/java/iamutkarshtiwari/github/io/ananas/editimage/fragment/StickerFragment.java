@@ -17,8 +17,6 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.LinkedHashMap;
 
 import iamutkarshtiwari.github.io.ananas.R;
@@ -55,7 +53,7 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
     }
 
     @Override
-    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         return inflater.inflate(R.layout.fragment_edit_image_sticker_type, null);

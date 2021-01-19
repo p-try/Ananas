@@ -1,12 +1,13 @@
 package iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.utils;
 
-import java.io.Closeable;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.ParcelFileDescriptor;
 import android.provider.MediaStore.Images.ImageColumns;
+
+import java.io.Closeable;
 
 /**
  * Various I/O utilities

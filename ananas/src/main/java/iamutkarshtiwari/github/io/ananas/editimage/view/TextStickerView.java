@@ -2,11 +2,12 @@ package iamutkarshtiwari.github.io.ananas.editimage.view;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.Nullable;
 
 public class TextStickerView extends RelativeLayout {
     private ImageView bitmapHolderImageView;

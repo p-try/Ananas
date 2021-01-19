@@ -1,8 +1,6 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment.paint;
 
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +12,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import org.jetbrains.annotations.NotNull;
-
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.viewmodel.PaintViewModel;
 
@@ -25,10 +21,6 @@ public class EraserConfigDialog extends BottomSheetDialogFragment implements See
 
     public EraserConfigDialog() {
         // Required empty public constructor
-    }
-
-    public interface Properties {
-        void onBrushSizeChanged(int brushSize);
     }
 
     @Override
