@@ -139,7 +139,7 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
                         .doFinally(() -> {
                             EditImageActivity activityInstance;
                             if ((activityInstance = getActivityInstance()) != null)
-                                activityInstance.showLoadingDialog();
+                                activityInstance.dismissLoadingDialog();
                         })
                         .subscribe(processedBitmap -> {
                             if (processedBitmap == null)
