@@ -5,24 +5,25 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView.ViewHolder;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.viewholders.StickerViewHolder;
-import iamutkarshtiwari.github.io.ananas.editimage.fragment.StickerFragment;
 
 public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
-    private StickerFragment stickerFragment;
+    private final OnStickerSelection mCallback;
     private ImageClick imageClick = new ImageClick();
     private List<String> pathList = new ArrayList<>();
 
-    public StickerAdapter(StickerFragment fragment) {
+    public StickerAdapter(OnStickerSelection callback) {
         super();
-        this.stickerFragment = fragment;
+        this.mCallback = callback;
     }
 
     @Override
@@ -45,15 +46,15 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder viewHolder, int position) {
-        StickerViewHolder stickerViewHolder = (StickerViewHolder) viewHolder;
+    public void onBindViewHolder(@NonNull ViewHolder mViewHolder, int position) {
+        StickerViewHolder viewHolder = (StickerViewHolder) mViewHolder;
         String path = pathList.get(position);
 
         String imageUrl = "drawable/" + path;
-        int imageKey = stickerFragment.getResources().getIdentifier(imageUrl, "drawable", stickerFragment.getContext().getPackageName());
-        stickerViewHolder.image.setImageDrawable(stickerFragment.getResources().getDrawable(imageKey));
-        stickerViewHolder.image.setTag(imageUrl);
-        stickerViewHolder.image.setOnClickListener(imageClick);
+        int imageKey = viewHolder.itemView.getResources().getIdentifier(imageUrl, "drawable", viewHolder.itemView.getContext().getPackageName());
+        viewHolder.image.setImageDrawable(ContextCompat.getDrawable(viewHolder.itemView.getContext(), imageKey));
+        viewHolder.image.setTag(imageUrl);
+        viewHolder.image.setOnClickListener(imageClick);
     }
 
     public void addStickerImages(String folderPath, int stickerCount) {
@@ -68,7 +69,11 @@ public class StickerAdapter extends RecyclerView.Adapter<ViewHolder> {
         @Override
         public void onClick(View v) {
             String data = (String) v.getTag();
-            stickerFragment.selectedStickerItem(data);
+            mCallback.onStickerSelected(data);
         }
+    }
+
+    public interface OnStickerSelection {
+        void onStickerSelected(String data);
     }
 }

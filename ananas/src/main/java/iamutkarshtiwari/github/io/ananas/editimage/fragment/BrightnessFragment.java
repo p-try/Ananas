@@ -8,13 +8,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SeekBar;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.Utils;
-import iamutkarshtiwari.github.io.ananas.editimage.view.BrightnessView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
 
 
@@ -25,9 +25,7 @@ public class BrightnessFragment extends BaseEditFragment {
 
     private static final int INITIAL_BRIGHTNESS = 0;
 
-    private BrightnessView mBrightnessView;
     private SeekBar mSeekBar;
-    private View mainView;
 
     public static BrightnessFragment newInstance() {
         return new BrightnessFragment();
@@ -36,13 +34,7 @@ public class BrightnessFragment extends BaseEditFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_brightness, null);
-        mappingView(mainView);
-        return mainView;
-    }
-
-    private void mappingView(View view) {
-        mSeekBar = view.findViewById(R.id.seekBar);
+        return inflater.inflate(R.layout.fragment_edit_image_brightness, null);
     }
 
     @Override
@@ -51,18 +43,26 @@ public class BrightnessFragment extends BaseEditFragment {
     }
 
     @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        mSeekBar = view.findViewById(R.id.seekBar);
+
+        View mBackToMenu = view.findViewById(R.id.back_to_main);
+        mBackToMenu.setOnClickListener(new BrightnessFragment.BackToMenuClick());
+    }
+
+    @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        View mBackToMenu = mainView.findViewById(R.id.back_to_main);
-
-        this.mBrightnessView = ensureEditActivity().brightnessView;
-        mBackToMenu.setOnClickListener(new BrightnessFragment.BackToMenuClick());
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 float value = progress - (seekBar.getMax() / 2);
-                activity.brightnessView.setBright(value / 10f);
+                EditImageActivity activity;
+                if ((activity = getActivityInstance()) != null)
+                    activity.brightnessView.setBright(value / 10f);
             }
 
             @Override
@@ -79,26 +79,31 @@ public class BrightnessFragment extends BaseEditFragment {
     }
 
     @Override
-    public void onShow() {
-        activity.mode = EditImageActivity.MODE_BRIGHTNESS;
-        activity.mainImage.setImageBitmap(activity.getMainBit());
-        activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-        activity.mainImage.setVisibility(View.GONE);
+    public void onShow() {EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = EditImageActivity.MODE_BRIGHTNESS;
+            activity.mainImage.setImageBitmap(activity.getMainBit());
+            activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            activity.mainImage.setVisibility(View.GONE);
 
-        activity.brightnessView.setImageBitmap(activity.getMainBit());
-        activity.brightnessView.setVisibility(View.VISIBLE);
+            activity.brightnessView.setImageBitmap(activity.getMainBit());
+            activity.brightnessView.setVisibility(View.VISIBLE);
+            activity.bannerFlipper.showNext();
+        }
         initView();
-        activity.bannerFlipper.showNext();
     }
 
     @Override
     public void backToMain() {
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(0);
-        activity.mainImage.setVisibility(View.VISIBLE);
-        activity.brightnessView.setVisibility(View.GONE);
-        activity.bannerFlipper.showPrevious();
-        activity.brightnessView.setBright(INITIAL_BRIGHTNESS);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance())!= null) {
+            activity.mode = EditImageActivity.MODE_NONE;
+            activity.bottomGallery.setCurrentItem(0);
+            activity.mainImage.setVisibility(View.VISIBLE);
+            activity.brightnessView.setVisibility(View.GONE);
+            activity.bannerFlipper.showPrevious();
+            activity.brightnessView.setBright(INITIAL_BRIGHTNESS);
+        }
     }
 
     public void applyBrightness() {
@@ -106,8 +111,11 @@ public class BrightnessFragment extends BaseEditFragment {
             backToMain();
             return;
         }
-        Bitmap bitmap = ((BitmapDrawable) mBrightnessView.getDrawable()).getBitmap();
-        activity.changeMainBitmap(Utils.brightBitmap(bitmap, mBrightnessView.getBright()), true);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance())!= null) {
+            Bitmap bitmap = ((BitmapDrawable) activity.brightnessView.getDrawable()).getBitmap();
+            activity.changeMainBitmap(Utils.brightBitmap(bitmap, activity.brightnessView.getBright()), true);
+        }
         backToMain();
     }
 

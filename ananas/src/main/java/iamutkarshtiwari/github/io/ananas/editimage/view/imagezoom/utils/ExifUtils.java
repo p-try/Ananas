@@ -1,6 +1,5 @@
 package iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.utils;
 
-import java.io.IOException;
 import android.content.ContentProviderClient;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -9,6 +8,8 @@ import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore.Images;
+
+import java.io.IOException;
 
 public class ExifUtils {
 

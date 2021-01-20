@@ -9,6 +9,7 @@ import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -16,26 +17,24 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.adapter.ColorPickerAdapter;
+import iamutkarshtiwari.github.io.ananas.editimage.viewmodel.PaintViewModel;
+
+import static iamutkarshtiwari.github.io.ananas.editimage.viewmodel.PaintViewModel.MAX_ALPHA;
+import static iamutkarshtiwari.github.io.ananas.editimage.viewmodel.PaintViewModel.MAX_PERCENT;
 
 public class BrushConfigDialog extends BottomSheetDialogFragment implements SeekBar.OnSeekBarChangeListener {
+
+    private PaintViewModel paintViewModel;
 
     public BrushConfigDialog() {
         // Required empty public constructor
     }
 
-    private Properties mProperties;
-
-    public interface Properties {
-        void onColorChanged(int colorCode);
-
-        void onOpacityChanged(int opacity);
-
-        void onBrushSizeChanged(int brushSize);
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        paintViewModel = new ViewModelProvider(requireActivity()).get(PaintViewModel.class);
     }
 
     @Override
@@ -50,37 +49,33 @@ public class BrushConfigDialog extends BottomSheetDialogFragment implements Seek
         SeekBar sbOpacity = view.findViewById(R.id.sbOpacity);
         SeekBar sbBrushSize = view.findViewById(R.id.sbSize);
 
+        if (paintViewModel.getBrushOpacity().getValue() != null)
+            sbOpacity.setProgress((int) (paintViewModel.getBrushOpacity().getValue() * MAX_PERCENT / MAX_ALPHA));
+
+        if (paintViewModel.getBrushSize().getValue() != null)
+            sbBrushSize.setProgress(paintViewModel.getBrushSize().getValue());
+
         sbOpacity.setOnSeekBarChangeListener(this);
         sbBrushSize.setOnSeekBarChangeListener(this);
 
-        LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
+        LinearLayoutManager layoutManager = new LinearLayoutManager(requireActivity(), LinearLayoutManager.HORIZONTAL, false);
         rvColor.setLayoutManager(layoutManager);
         rvColor.setHasFixedSize(true);
-        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getActivity());
+
+        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(requireActivity());
         colorPickerAdapter.setOnColorPickerClickListener(colorCode -> {
-            if (mProperties != null) {
-                dismiss();
-                mProperties.onColorChanged(colorCode);
-            }
+            paintViewModel.setBrushColor(colorCode);
+            paintViewModel.setBrushOpacity(sbOpacity.getProgress());
         });
         rvColor.setAdapter(colorPickerAdapter);
     }
-
-    void setPropertiesChangeListener(Properties properties) {
-        mProperties = properties;
-    }
-
     @Override
-    public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+    public void onProgressChanged(SeekBar seekBar, int value, boolean b) {
         int id = seekBar.getId();
         if (id == R.id.sbOpacity) {
-            if (mProperties != null) {
-                mProperties.onOpacityChanged(i);
-            }
+            paintViewModel.setBrushOpacity(value);
         } else if (id == R.id.sbSize) {
-            if (mProperties != null) {
-                mProperties.onBrushSizeChanged(i);
-            }
+            paintViewModel.setBrushSize(value);
         }
     }
 

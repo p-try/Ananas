@@ -1,7 +1,7 @@
 package iamutkarshtiwari.github.io.ananas.editimage;
 
 import android.Manifest;
-import android.app.Activity;
+import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -19,16 +19,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.lifecycle.ViewModelProvider;
 
 import com.theartofdev.edmodo.cropper.CropImageView;
-
-import org.jetbrains.annotations.NotNull;
 
 import iamutkarshtiwari.github.io.ananas.BaseActivity;
 import iamutkarshtiwari.github.io.ananas.R;
@@ -55,6 +55,7 @@ import iamutkarshtiwari.github.io.ananas.editimage.view.StickerView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.TextStickerView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouch;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
+import iamutkarshtiwari.github.io.ananas.editimage.viewmodel.PaintViewModel;
 import iamutkarshtiwari.github.io.ananas.editimage.widget.RedoUndoController;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -118,16 +119,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     public Uri sourceUri;
 
-    public static void start(Activity activity, Intent intent, int requestCode) {
-        String sourcePath = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
-        String sourceUriStr = intent.getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
-
-        if (TextUtils.isEmpty(sourcePath) && TextUtils.isEmpty(sourceUriStr)) {
-            Toast.makeText(activity, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
-            return;
-        }
-        activity.startActivityForResult(intent, requestCode);
-    }
+    PaintViewModel paintViewModel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -135,6 +127,15 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         setContentView(R.layout.activity_image_edit);
         getData();
         initView();
+
+        paintViewModel = new ViewModelProvider(this).get(PaintViewModel.class);
+
+        paintViewModel.getBrushSize().observe(this, size -> paintView.setWidth(size));
+        paintViewModel.getBrushOpacity().observe(this, size -> paintView.setStrokeAlpha(size));
+        paintViewModel.getBrushColor().observe(this, color -> paintView.setColor(color));
+
+        paintViewModel.getEraserSize().observe(this, value -> paintView.setEraserStrokeWidth(value));
+        paintViewModel.isEraser().observe(this, value -> paintView.setEraser(value));
     }
 
     @Override
@@ -155,7 +156,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
-        isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
+        isSupportActionBarEnabled = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
         String sourceUriStr = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_URI);
         if (!TextUtils.isEmpty(sourceUriStr)) {
             sourceUri = Uri.parse(sourceUriStr);
@@ -210,8 +211,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         mainMenuFragment = MainMenuFragment.newInstance();
         mainMenuFragment.setArguments(getIntent().getExtras());
 
-        BottomGalleryAdapter bottomGalleryAdapter = new BottomGalleryAdapter(
-                this.getSupportFragmentManager());
+        BottomGalleryAdapter bottomGalleryAdapter = new BottomGalleryAdapter(this.getSupportFragmentManager());
         stickerFragment = StickerFragment.newInstance();
         filterListFragment = FilterListFragment.newInstance();
         cropFragment = CropFragment.newInstance();
@@ -250,7 +250,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
     @Override
     public void onRequestPermissionsResult(int requestCode,
-                                           @NotNull String permissions[], @NotNull int[] grantResults) {
+                                           @NonNull String permissions[], @NonNull int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_CODE: {
                 // If request is cancelled, the result arrays are empty.
@@ -263,10 +263,13 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     @Override
     protected void onResume() {
         super.onResume();
         // Lock orientation for this activity
+        // If isPortraitForced, set orientation to portrait, else, lock the orientation to current
+        // orientation of the device.
         if (isPortraitForced) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         } else {
@@ -447,33 +450,31 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         }
     }
 
+    @SuppressLint("SourceLockedOrientationActivity")
     protected void setLockScreenOrientation(boolean lock) {
-        if (Build.VERSION.SDK_INT >= 18) {
-            setRequestedOrientation(lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
-            return;
-        }
 
-        if (lock) {
-            switch (getWindowManager().getDefaultDisplay().getRotation()) {
-                case Surface
-                        .ROTATION_0:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-                    break;
-                case Surface
-                        .ROTATION_90:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-                    break;
-                case Surface
-                        .ROTATION_180:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
-                    break;
-                case Surface
-                        .ROTATION_270:
-                    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
-                    break;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            setRequestedOrientation(lock ? ActivityInfo.SCREEN_ORIENTATION_LOCKED : ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        } else {
+            if (lock) {
+                switch (getWindowManager().getDefaultDisplay().getRotation()) {
+                    case Surface.ROTATION_0:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+                        break;
+                    case Surface.ROTATION_90:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+                        break;
+                    case Surface.ROTATION_180:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_PORTRAIT);
+                        break;
+                    case Surface.ROTATION_270:
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_REVERSE_LANDSCAPE);
+                        break;
+                }
+            } else {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
             }
-        } else
-            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR);
+        }
     }
 
     public void increaseOpTimes() {

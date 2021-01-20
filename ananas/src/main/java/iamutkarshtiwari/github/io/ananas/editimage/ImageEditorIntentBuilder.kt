@@ -5,9 +5,9 @@ import android.content.Intent
 import android.net.Uri
 
 class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Context,
-                                                         private val sourcePath: String?,
-                                                         private val outputPath: String?,
-                                                         private val intent: Intent = Intent(
+                                                                 private val sourcePath: String?,
+                                                                 private val outputPath: String?,
+                                                                 private val intent: Intent = Intent(
                                                                  context,
                                                                  EditImageActivity::class.java
                                                          )

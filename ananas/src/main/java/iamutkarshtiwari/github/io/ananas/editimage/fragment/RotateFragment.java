@@ -1,6 +1,5 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
-import android.app.Dialog;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Rect;
@@ -12,11 +11,12 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import iamutkarshtiwari.github.io.ananas.BaseActivity;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
-import iamutkarshtiwari.github.io.ananas.editimage.view.RotateImageView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -30,10 +30,6 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
     public static final String TAG = RotateFragment.class.getName();
 
     private static final int RIGHT_ANGLE = 90;
-
-    private View mainView;
-    private RotateImageView rotatePanel;
-    private Dialog loadingDialog;
 
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
@@ -49,52 +45,51 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_rotate, null);
-        loadingDialog = BaseActivity.getLoadingDialog(getActivity(), R.string.iamutkarshtiwari_github_io_ananas_loading,
-                false);
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_rotate, null);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        this.rotatePanel = ensureEditActivity().rotatePanel;
-        setClickListeners();
-    }
-
-    private void setClickListeners() {
-        View backToMenu = mainView.findViewById(R.id.back_to_main);
+        View backToMenu = view.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());
 
-        ImageView rotateLeft = mainView.findViewById(R.id.rotate_left);
-        ImageView rotateRight = mainView.findViewById(R.id.rotate_right);
+        ImageView rotateLeft = view.findViewById(R.id.rotate_left);
         rotateLeft.setOnClickListener(this);
+
+        ImageView rotateRight = view.findViewById(R.id.rotate_right);
         rotateRight.setOnClickListener(this);
     }
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_ROTATE;
-        activity.mainImage.setImageBitmap(activity.getMainBit());
-        activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
-        activity.mainImage.setVisibility(View.GONE);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = EditImageActivity.MODE_ROTATE;
+            activity.mainImage.setImageBitmap(activity.getMainBit());
+            activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
+            activity.mainImage.setVisibility(View.GONE);
 
-        activity.rotatePanel.addBit(activity.getMainBit(),
-                activity.mainImage.getBitmapRect());
+            activity.rotatePanel.addBit(activity.getMainBit(),
+                    activity.mainImage.getBitmapRect());
 
-        activity.rotatePanel.reset();
-        activity.rotatePanel.setVisibility(View.VISIBLE);
-        activity.bannerFlipper.showNext();
+            activity.rotatePanel.reset();
+            activity.rotatePanel.setVisibility(View.VISIBLE);
+            activity.bannerFlipper.showNext();
+        }
     }
 
     @Override
     public void backToMain() {
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(0);
-        activity.mainImage.setVisibility(View.VISIBLE);
-        this.rotatePanel.setVisibility(View.GONE);
-        activity.bannerFlipper.showPrevious();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = EditImageActivity.MODE_NONE;
+            activity.bottomGallery.setCurrentItem(0);
+            activity.mainImage.setVisibility(View.VISIBLE);
+            activity.rotatePanel.setVisibility(View.GONE);
+            activity.bannerFlipper.showPrevious();
+        }
     }
 
     @Override
@@ -119,79 +114,100 @@ public class RotateFragment extends BaseEditFragment implements OnClickListener 
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.rotate_left) {
-            int updatedAngle = rotatePanel.getRotateAngle() - RIGHT_ANGLE;
-            rotatePanel.rotateImage(updatedAngle);
-        } else if (id == R.id.rotate_right) {
-            int updatedAngle = rotatePanel.getRotateAngle() + RIGHT_ANGLE;
-            rotatePanel.rotateImage(updatedAngle);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance())!= null) {
+            if (id == R.id.rotate_left) {
+                int updatedAngle = activity.rotatePanel.getRotateAngle() - RIGHT_ANGLE;
+                activity.rotatePanel.rotateImage(updatedAngle);
+            } else if (id == R.id.rotate_right) {
+                int updatedAngle = activity.rotatePanel.getRotateAngle() + RIGHT_ANGLE;
+                activity.rotatePanel.rotateImage(updatedAngle);
+            }
         }
     }
 
     public void applyRotateImage() {
-        if (rotatePanel.getRotateAngle() == 0 || (rotatePanel.getRotateAngle() % 360) == 0) {
-            backToMain();
-        } else {
-            compositeDisposable.clear();
-            Disposable applyRotationDisposable = applyRotation(activity.getMainBit())
-                    .subscribeOn(Schedulers.computation())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .doOnSubscribe(subscriber -> loadingDialog.show())
-                    .doFinally(() -> loadingDialog.dismiss())
-                    .subscribe(processedBitmap -> {
-                        if (processedBitmap == null)
-                            return;
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            if (activity.rotatePanel.getRotateAngle() == 0
+                    || (activity.rotatePanel.getRotateAngle() % 360) == 0) {
+                backToMain();
+            } else {
+                compositeDisposable.clear();
+                Disposable applyRotationDisposable = applyRotation(activity.getMainBit())
+                        .subscribeOn(Schedulers.computation())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .doOnSubscribe(subscriber -> {
+                            EditImageActivity activityInstance;
+                            if ((activityInstance = getActivityInstance()) != null)
+                                activityInstance.showLoadingDialog();
+                        })
+                        .doFinally(() -> {
+                            EditImageActivity activityInstance;
+                            if ((activityInstance = getActivityInstance()) != null)
+                                activityInstance.dismissLoadingDialog();
+                        })
+                        .subscribe(processedBitmap -> {
+                            if (processedBitmap == null)
+                                return;
 
-                        applyAndExit(processedBitmap);
-                    }, e -> {
-                        // Do nothing on error
-                    });
+                            applyAndExit(processedBitmap);
+                        }, e -> {
+                            // Do nothing on error
+                        });
 
-            compositeDisposable.add(applyRotationDisposable);
+                compositeDisposable.add(applyRotationDisposable);
+            }
         }
     }
 
     private Single<Bitmap> applyRotation(Bitmap sourceBitmap) {
         return Single.fromCallable(() -> {
-            RectF imageRect = rotatePanel.getImageNewRect();
-            Bitmap resultBitmap = Bitmap.createBitmap((int) imageRect.width(),
-                    (int) imageRect.height(), Bitmap.Config.ARGB_4444);
+            Bitmap resultBitmap = null;
+            EditImageActivity activity;
+            if ((activity = getActivityInstance()) != null) {
+                RectF imageRect = activity.rotatePanel.getImageNewRect();
+                resultBitmap = Bitmap.createBitmap((int) imageRect.width(),
+                        (int) imageRect.height(), Bitmap.Config.ARGB_4444);
 
-            Canvas canvas = new Canvas(resultBitmap);
-            int w = sourceBitmap.getWidth() >> 1;
-            int h = sourceBitmap.getHeight() >> 1;
+                Canvas canvas = new Canvas(resultBitmap);
+                int w = sourceBitmap.getWidth() >> 1;
+                int h = sourceBitmap.getHeight() >> 1;
 
-            float centerX = imageRect.width() / 2;
-            float centerY = imageRect.height() / 2;
+                float centerX = imageRect.width() / 2;
+                float centerY = imageRect.height() / 2;
 
-            float left = centerX - w;
-            float top = centerY - h;
+                float left = centerX - w;
+                float top = centerY - h;
 
-            RectF destinationRect = new RectF(left, top, left + sourceBitmap.getWidth(), top
-                    + sourceBitmap.getHeight());
-            canvas.save();
-            canvas.rotate(
-                    rotatePanel.getRotateAngle(),
-                    imageRect.width() / 2,
-                    imageRect.height() / 2
-            );
+                RectF destinationRect = new RectF(left, top, left + sourceBitmap.getWidth(), top
+                        + sourceBitmap.getHeight());
+                canvas.save();
+                canvas.rotate(
+                        activity.rotatePanel.getRotateAngle(),
+                        imageRect.width() / 2,
+                        imageRect.height() / 2
+                );
 
-            canvas.drawBitmap(
-                    sourceBitmap,
-                    new Rect(
-                            0,
-                            0,
-                            sourceBitmap.getWidth(),
-                            sourceBitmap.getHeight()),
-                    destinationRect,
-                    null);
-            canvas.restore();
+                canvas.drawBitmap(
+                        sourceBitmap,
+                        new Rect(
+                                0,
+                                0,
+                                sourceBitmap.getWidth(),
+                                sourceBitmap.getHeight()),
+                        destinationRect,
+                        null);
+                canvas.restore();
+            }
             return resultBitmap;
         });
     }
 
     private void applyAndExit(Bitmap resultBitmap) {
-        activity.changeMainBitmap(resultBitmap, true);
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null)
+            activity.changeMainBitmap(resultBitmap, true);
         backToMain();
     }
 }

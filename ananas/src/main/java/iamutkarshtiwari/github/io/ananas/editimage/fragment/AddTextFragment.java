@@ -48,7 +48,6 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     public static final int INDEX = ModuleConfig.INDEX_ADDTEXT;
     public static final String TAG = AddTextFragment.class.getName();
 
-    private View mainView;
     private TextStickerView textStickersParentView;
     private ZoomLayout zoomLayout;
 
@@ -68,34 +67,40 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        mainView = inflater.inflate(R.layout.fragment_edit_image_add_text, container, false);
-        return mainView;
+        return inflater.inflate(R.layout.fragment_edit_image_add_text, container, false);
     }
 
+
     @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-        EditImageActivity editImageActivity = ensureEditActivity();
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
-        inputMethodManager = (InputMethodManager) editImageActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-        textStickersParentView = editImageActivity.findViewById(R.id.text_sticker_panel);
-        textStickersParentView.setDrawingCacheEnabled(true);
-        addedViews = new ArrayList<>();
-
-        zoomLayout = editImageActivity.findViewById(R.id.text_sticker_panel_frame);
-
-        View backToMenu = mainView.findViewById(R.id.back_to_main);
+        View backToMenu = view.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());
 
-        LinearLayout addTextButton = mainView.findViewById(R.id.add_text_btn);
+        LinearLayout addTextButton = view.findViewById(R.id.add_text_btn);
         addTextButton.setOnClickListener(this);
+
+        addedViews = new ArrayList<>();
+
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            inputMethodManager = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            textStickersParentView = activity.findViewById(R.id.text_sticker_panel);
+            textStickersParentView.setDrawingCacheEnabled(true);
+
+            zoomLayout = activity.findViewById(R.id.text_sticker_panel_frame);
+        }
     }
 
     private void showTextEditDialog(final View rootView, String text, int colorCode) {
-        TextEditorDialogFragment textEditorDialogFragment =
-                TextEditorDialogFragment.show(activity, text, colorCode);
-        textEditorDialogFragment.setOnTextEditorListener((inputText, colorCode1) -> editText(rootView, inputText, colorCode1));
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            TextEditorDialogFragment textEditorDialogFragment =
+                    TextEditorDialogFragment.show(activity, text, colorCode);
+            textEditorDialogFragment.setOnTextEditorListener((inputText, colorCode1) -> editText(rootView, inputText, colorCode1));
+        }
     }
 
     @Override
@@ -121,15 +126,17 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     @Override
     public void onClick(View v) {
         int id = v.getId();
-        if (id == R.id.add_text_btn) {
+        EditImageActivity activity;
+        if (id == R.id.add_text_btn && (activity = getActivityInstance()) != null) {
             TextEditorDialogFragment textEditorDialogFragment = TextEditorDialogFragment.show(activity);
             textEditorDialogFragment.setOnTextEditorListener(this::addText);
         }
     }
 
     public void hideInput() {
-        if (getActivity() != null && getActivity().getCurrentFocus() != null && isInputMethodShow()) {
-            inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(),
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null && activity.getCurrentFocus() != null && isInputMethodShow()) {
+            inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(),
                     InputMethodManager.HIDE_NOT_ALWAYS);
         }
     }
@@ -140,7 +147,9 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
 
     @Override
     public void onMainBitmapChange() {
-        textStickersParentView.updateImageBitmap(activity.getMainBit());
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null)
+            textStickersParentView.updateImageBitmap(activity.getMainBit());
     }
 
     private final class BackToMenuClick implements OnClickListener {
@@ -154,21 +163,26 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     public void backToMain() {
         hideInput();
         clearAllStickers();
-        activity.mode = EditImageActivity.MODE_NONE;
-        activity.bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
-        activity.mainImage.setVisibility(View.VISIBLE);
-        activity.bannerFlipper.showPrevious();
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = EditImageActivity.MODE_NONE;
+            activity.bottomGallery.setCurrentItem(MainMenuFragment.INDEX);
+            activity.mainImage.setVisibility(View.VISIBLE);
+            activity.bannerFlipper.showPrevious();
+        }
         textStickersParentView.setVisibility(View.GONE);
     }
 
     @Override
     public void onShow() {
-        activity.mode = EditImageActivity.MODE_TEXT;
-        activity.mainImage.setVisibility(View.GONE);
-        textStickersParentView.updateImageBitmap(activity.getMainBit());
-        activity.bannerFlipper.showNext();
-        textStickersParentView.setVisibility(View.VISIBLE);
-
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            activity.mode = EditImageActivity.MODE_TEXT;
+            activity.mainImage.setVisibility(View.GONE);
+            textStickersParentView.updateImageBitmap(activity.getMainBit());
+            activity.bannerFlipper.showNext();
+            textStickersParentView.setVisibility(View.VISIBLE);
+        }
         autoScaleImageToFitBounds();
     }
 
@@ -208,7 +222,8 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         bitmap -> {
-                            if (addedViews.size() > 0) {
+                            EditImageActivity activity;
+                            if (addedViews.size() > 0 && (activity = getActivityInstance()) != null) {
                                 activity.changeMainBitmap(bitmap, true);
                             }
                             backToMain();
@@ -263,45 +278,48 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
         textInputTv.setTextSize(TypedValue.COMPLEX_UNIT_SP,
                 getResources().getDimension(R.dimen.text_sticker_size));
 
-        MultiTouchListener multiTouchListener = new MultiTouchListener(
-                imgClose,
-                this.textStickersParentView,
-                activity.mainImage,
-                this, getContext());
-        multiTouchListener.setOnGestureControl(new OnGestureControl() {
+        EditImageActivity activity;
+        if ((activity = getActivityInstance()) != null) {
+            MultiTouchListener multiTouchListener = new MultiTouchListener(
+                    imgClose,
+                    this.textStickersParentView,
+                    activity.mainImage,
+                    this,
+                    getContext());
+            multiTouchListener.setOnGestureControl(new OnGestureControl() {
 
-            boolean isDownAlready = false;
+                boolean isDownAlready = false;
 
-            @Override
-            public void onClick() {
-                boolean isBackgroundVisible = frameBorder.getTag() != null && (boolean) frameBorder.getTag();
-                if (isBackgroundVisible && !isDownAlready) {
-                    String textInput = textInputTv.getText().toString();
-                    int currentTextColor = textInputTv.getCurrentTextColor();
-                    showTextEditDialog(textStickerView, textInput, currentTextColor);
+                @Override
+                public void onClick() {
+                    boolean isBackgroundVisible = frameBorder.getTag() != null && (boolean) frameBorder.getTag();
+                    if (isBackgroundVisible && !isDownAlready) {
+                        String textInput = textInputTv.getText().toString();
+                        int currentTextColor = textInputTv.getCurrentTextColor();
+                        showTextEditDialog(textStickerView, textInput, currentTextColor);
+                    }
                 }
-            }
 
-            @Override
-            public void onDown() {
-                boolean isBackgroundVisible = frameBorder.getTag() != null && (boolean) frameBorder.getTag();
-                if (!isBackgroundVisible) {
-                    frameBorder.setBackgroundResource(R.drawable.background_border);
-                    imgClose.setVisibility(View.VISIBLE);
-                    frameBorder.setTag(true);
-                    updateViewsBordersVisibilityExcept(textStickerView);
-                    isDownAlready = true;
-                } else {
-                    isDownAlready = false;
+                @Override
+                public void onDown() {
+                    boolean isBackgroundVisible = frameBorder.getTag() != null && (boolean) frameBorder.getTag();
+                    if (!isBackgroundVisible) {
+                        frameBorder.setBackgroundResource(R.drawable.background_border);
+                        imgClose.setVisibility(View.VISIBLE);
+                        frameBorder.setTag(true);
+                        updateViewsBordersVisibilityExcept(textStickerView);
+                        isDownAlready = true;
+                    } else {
+                        isDownAlready = false;
+                    }
                 }
-            }
 
-            @Override
-            public void onLongClick() {
-            }
-        });
-
-        textStickerView.setOnTouchListener(multiTouchListener);
+                @Override
+                public void onLongClick() {
+                }
+            });
+            textStickerView.setOnTouchListener(multiTouchListener);
+        }
         addViewToParent(textStickerView);
     }
 

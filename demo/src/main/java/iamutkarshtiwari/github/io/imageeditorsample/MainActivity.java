@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         File outputFile = FileUtils.genEditFile();
         try {
             Intent intent = new ImageEditorIntentBuilder(this, path, outputFile.getAbsolutePath())
-                    .withAddText()
+                    .withAddText() // Add the features you need
                     .withPaintFeature()
                     .withFilterFeature()
                     .withRotateFeature()
@@ -152,12 +152,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .withSaturationFeature()
                     .withBeautyFeature()
                     .withStickerFeature()
-                    .withEditorTitle("Photo Editor")
-                    .forcePortrait(true)
-                    .setSupportActionBarVisibility(false)
+                    .forcePortrait(true) // Add this to force portrait mode (It's set to false by default)
+                    .setSupportActionBarVisibility(false) // To hide app's default action bar
                     .build();
-
-            EditImageActivity.start(this, intent, ACTION_REQUEST_EDITIMAGE);
+            startActivityForResult(intent, ACTION_REQUEST_EDITIMAGE);
         } catch (Exception e) {
             Toast.makeText(this, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
             Log.e("Demo App", e.getMessage());
@@ -255,9 +253,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 .doFinally(() -> loadingDialog.dismiss())
                 .subscribe(
                         this::setMainBitmap,
-                        e -> { e.printStackTrace();
+                        e -> {
+                            e.printStackTrace();
                             Toast.makeText(
-                                this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show();}
+                                    this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show();
+                        }
                 );
 
         compositeDisposable.add(applyRotationDisposable);

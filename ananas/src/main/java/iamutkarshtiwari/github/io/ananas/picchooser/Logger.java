@@ -15,13 +15,13 @@
  */
 package iamutkarshtiwari.github.io.ananas.picchooser;
 
+import android.database.Cursor;
+import android.os.Environment;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Date;
-
-import android.database.Cursor;
-import android.os.Environment;
 
 public class Logger {
 
