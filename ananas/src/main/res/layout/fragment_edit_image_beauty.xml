@@ -9,8 +9,10 @@
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_marginStart="@dimen/margin_16dp"
+        android:layout_marginLeft="@dimen/margin_16dp"
         android:paddingTop="@dimen/margin_16dp"
         android:paddingBottom="@dimen/margin_16dp"
         android:src="@drawable/ic_baseline_arrow_back"
@@ -46,6 +48,7 @@
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_16dp"
+        android:layout_marginRight="@dimen/margin_16dp"
         android:gravity="center"
         android:text="0"
         android:textColor="@color/white"
@@ -76,13 +79,14 @@
         app:layout_constraintBottom_toBottomOf="@id/textPercentSkinTone"
         app:layout_constraintEnd_toStartOf="@id/textPercentSkinTone"
         app:layout_constraintStart_toEndOf="@id/textSkinTone"
-        app:layout_constraintTop_toTopOf="@id/textSkinTone"/>
+        app:layout_constraintTop_toTopOf="@id/textSkinTone" />
 
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/textPercentSkinTone"
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/margin_16dp"
+        android:layout_marginRight="@dimen/margin_16dp"
         android:gravity="center"
         android:text="0"
         android:textColor="@color/white"
