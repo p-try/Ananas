@@ -21,8 +21,10 @@
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        android:layout_marginBottom="@dimen/margin_8dp"
         android:layout_toEndOf="@id/back_to_main"
         android:layout_toRightOf="@id/back_to_main"
+        android:scrollbarThumbHorizontal="@drawable/drawable_scroll_bar"
         android:scrollbars="horizontal">
 
         <LinearLayout
