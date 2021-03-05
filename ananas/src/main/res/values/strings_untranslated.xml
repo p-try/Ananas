@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="iamutkarshtiwari_github_io_ananas_filter_drawable_list" translatable="false">
+        <item>filter_1</item>
+        <item>filter_2</item>
+        <item>filter_3</item>
+        <item>filter_4</item>
+        <item>filter_5</item>
+        <item>filter_6</item>
+        <item>filter_7</item>
+        <item>filter_8</item>
+        <item>filter_9</item>
+        <item>filter_10</item>
+        <item>filter_11</item>
+        <item>filter_12</item>
+    </string-array>
+
+    <string-array name="iamutkarshtiwari_github_io_ananas_types" translatable="false">
+        <item>type1</item>
+    </string-array>
+
+    <integer-array name="iamutkarshtiwari_github_io_ananas_type_count" translatable="false">
+        <item>9</item>
+    </integer-array>
+
+    <item name="iamutkarshtiwari_github_io_ananas_TAG_STICKERS_PATH" translatable="false" type="id" />
+    <item name="iamutkarshtiwari_github_io_ananas_TAG_STICKERS_COUNT" translatable="false" type="id" />
+
+    <string name="zero" translatable="false">0</string>
+    <string name="minus_fifty" translatable="false">-50</string>
+    <string name="fifty" translatable="false">50</string>
+</resources>

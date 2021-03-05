@@ -64,11 +64,10 @@ public class CustomPaintView extends View {
     private void init(Context context) {
         mPaint = new Paint();
         mPaint.setAntiAlias(true);
-
         mPaint.setColor(Color.RED);
         mPaint.setStrokeJoin(Paint.Join.ROUND);
         mPaint.setStrokeCap(Paint.Cap.ROUND);
-
+        mPaint.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.SRC));
 
         mEraserPaint = new Paint();
         mEraserPaint.setAlpha(0);

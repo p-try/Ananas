@@ -52,7 +52,7 @@ public class TextEditorDialogFragment extends DialogFragment {
 
     //Show dialog with default text input as empty and text color white
     public static TextEditorDialogFragment show(@NonNull AppCompatActivity appCompatActivity) {
-        return show(appCompatActivity, "", ContextCompat.getColor(appCompatActivity, R.color.white));
+        return show(appCompatActivity, "", ContextCompat.getColor(appCompatActivity, R.color.black));
     }
 
     @Override
@@ -91,10 +91,10 @@ public class TextEditorDialogFragment extends DialogFragment {
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false);
         addTextColorPickerRecyclerView.setLayoutManager(layoutManager);
         addTextColorPickerRecyclerView.setHasFixedSize(true);
-        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getContext());
+        ColorPickerAdapter colorPickerAdapter = new ColorPickerAdapter(getContext() , 0);
 
         //This listener will change the text color when clicked on any color from picker
-        colorPickerAdapter.setOnColorPickerClickListener(colorCode -> {
+        colorPickerAdapter.setOnColorPickerClickListener((colorCode, pos) -> {
             this.colorCode = colorCode;
             addTextEditText.setTextColor(colorCode);
         });

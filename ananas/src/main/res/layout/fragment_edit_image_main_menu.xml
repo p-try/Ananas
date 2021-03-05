@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:scrollbars="none">
+        android:scrollbars="horizontal">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -20,8 +20,8 @@
                 android:id="@+id/btn_paint"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"
@@ -43,8 +43,8 @@
                 android:id="@+id/btn_filter"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"
@@ -67,8 +67,8 @@
                 android:id="@+id/btn_crop"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"
@@ -91,8 +91,8 @@
                 android:id="@+id/btn_rotate"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"
@@ -115,8 +115,8 @@
                 android:id="@+id/btn_text"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"
@@ -139,8 +139,8 @@
                 android:id="@+id/btn_stickers"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"
@@ -163,8 +163,8 @@
                 android:id="@+id/btn_brightness"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"
@@ -187,8 +187,8 @@
                 android:id="@+id/btn_contrast"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"
@@ -211,8 +211,8 @@
                 android:id="@+id/btn_beauty"
                 style="@style/option_style"
                 android:layout_weight="1"
-                android:visibility="gone"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:visibility="gone">
 
                 <ImageView
                     style="@style/icon_style"

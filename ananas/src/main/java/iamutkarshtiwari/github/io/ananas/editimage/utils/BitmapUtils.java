@@ -28,12 +28,13 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.view.Display;
 import android.view.View;
+
+import androidx.exifinterface.media.ExifInterface;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -63,11 +64,10 @@ public class BitmapUtils {
     /** Used to know the max texture size allowed to be rendered */
     private static int mMaxTextureSize;
 
-    public static int getOrientation(final String imagePath) {
+    private static int getOrientation(final InputStream stream) {
         int rotate = 0;
         try {
-            File imageFile = new File(imagePath);
-            ExifInterface exif = new ExifInterface(imageFile.getAbsolutePath());
+            ExifInterface exif = new ExifInterface(stream);
             int orientation = exif.getAttributeInt(
                     ExifInterface.TAG_ORIENTATION,
                     ExifInterface.ORIENTATION_NORMAL);
@@ -83,6 +83,7 @@ public class BitmapUtils {
                     break;
             }
         } catch (Exception e) {
+            Log.e(TAG, "getOrientation()", e);
             e.printStackTrace();
         }
         return rotate;
@@ -449,6 +450,10 @@ public class BitmapUtils {
         try {
             ContentResolver resolver = context.getContentResolver();
 
+            InputStream inputStream = resolver.openInputStream(uri);
+            int orientation = getOrientation(inputStream);
+            Log.e(TAG, "orientation: " + orientation);
+
             // First decode with inJustDecodeBounds=true to check dimensions
             BitmapFactory.Options options = decodeImageForOption(resolver, uri);
 
@@ -464,6 +469,13 @@ public class BitmapUtils {
 
             // Decode bitmap with inSampleSize set
             Bitmap bitmap = decodeImage(resolver, uri, options);
+
+            /* Check and fix image orientation & set the original orientation used while capturing
+            the image. Mostly affected in samsung devices */
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+            bitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(),
+                    bitmap.getHeight(), matrix, true);
 
             return bitmap;
 
