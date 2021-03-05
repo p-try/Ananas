@@ -187,13 +187,15 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     }
 
     private void autoScaleImageToFitBounds() {
-        textStickersParentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                textStickersParentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                scaleImage();
-            }
-        });
+        if (textStickersParentView != null) {
+            textStickersParentView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    textStickersParentView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    scaleImage();
+                }
+            });
+        }
     }
 
     private void scaleImage() {
@@ -363,7 +365,6 @@ public class AddTextFragment extends BaseEditFragment implements OnPhotoEditorLi
     private void addViewToParent(View view) {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         textStickersParentView.addView(view, params);
         addedViews.add(view);
         updateViewsBordersVisibilityExcept(view);

@@ -44,7 +44,6 @@ public class TextStickerView extends RelativeLayout {
         //Setup image attributes
         RelativeLayout.LayoutParams imageViewParams = new RelativeLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        imageViewParams.addRule(RelativeLayout.CENTER_IN_PARENT, RelativeLayout.TRUE);
         bitmapHolderImageView.setLayoutParams(imageViewParams);
         bitmapHolderImageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
         bitmapHolderImageView.setAdjustViewBounds(true);

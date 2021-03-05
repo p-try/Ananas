@@ -11,9 +11,9 @@
         android:id="@+id/add_text_done_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_alignParentTop="true"
         android:layout_margin="@dimen/margin_20dp"
         android:background="@drawable/background_border"
         android:padding="@dimen/padding_10dp"
@@ -29,10 +29,10 @@
         android:layout_height="match_parent"
         android:layout_above="@+id/add_text_color_picker_recycler_view"
         android:layout_below="@+id/add_text_done_tv"
-        android:gravity="center"
         android:background="@null"
+        android:gravity="center"
         android:inputType="textMultiLine"
-        android:textSize="@dimen/text_size_40sp" />
+        android:textSize="@dimen/text_size_36sp" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/add_text_color_picker_recycler_view"
@@ -40,6 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbarThumbHorizontal="@drawable/drawable_scroll_bar"
+        android:scrollbars="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:background="@android:color/black"
         tools:listitem="@layout/color_picker_item_list" />

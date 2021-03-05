@@ -64,8 +64,6 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
         super.onViewCreated(view, savedInstanceState);
 
         flipper = view.findViewById(R.id.flipper);
-        flipper.setInAnimation(view.getContext(), R.anim.in_bottom_to_top);
-        flipper.setOutAnimation(view.getContext(), R.anim.out_bottom_to_top);
 
         RecyclerView typeList = view.findViewById(R.id.stickers_type_list);
         typeList.setHasFixedSize(true);
@@ -86,7 +84,19 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
         backToMenu.setOnClickListener(new BackToMenuClick());
 
         View backToType = view.findViewById(R.id.back_to_type);
-        backToType.setOnClickListener(v -> flipper.showPrevious());
+        backToType.setOnClickListener(v -> showPreviousWithAnimation());
+    }
+
+    private void showNextWithAnimation() {
+        flipper.setInAnimation(this.getContext(), R.anim.in_bottom_to_top);
+        flipper.setOutAnimation(this.getContext(), R.anim.out_bottom_to_top);
+        flipper.showNext();
+    }
+
+    private void showPreviousWithAnimation() {
+        flipper.setInAnimation(this.getContext(), R.anim.in_top_to_bottom);
+        flipper.setOutAnimation(this.getContext(), R.anim.out_top_to_bottom);
+        flipper.showPrevious();
     }
 
     @Override
@@ -101,12 +111,13 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
 
     public void swipToStickerDetails(String path, int stickerCount) {
         stickerAdapter.addStickerImages(path, stickerCount);
-        flipper.showNext();
+        showNextWithAnimation();
     }
 
     @Override
     public void onStickerSelected(String path) {
-        int imageKey = getResources().getIdentifier(path, "drawable", getContext().getPackageName());
+        int imageKey = getResources().getIdentifier(path, "drawable",
+                getContext().getPackageName());
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), imageKey);
         EditImageActivity activity;
         if ((activity = getActivityInstance()) != null)
@@ -128,6 +139,10 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
 
     @Override
     public void backToMain() {
+        if (flipper.getDisplayedChild() == 1) {
+            showPreviousWithAnimation();
+            return;
+        }
         EditImageActivity activity;
         if ((activity = getActivityInstance()) != null) {
             activity.mode = MODE_NONE;
@@ -136,7 +151,6 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
             activity.stickerView.setVisibility(View.GONE);
             activity.bannerFlipper.showPrevious();
         }
-        flipper.showPrevious();
     }
 
     public void applyStickers() {
@@ -169,7 +183,9 @@ public class StickerFragment extends BaseEditFragment implements StickerAdapter.
                     }, e -> {
                         EditImageActivity activityInstance;
                         if ((activityInstance = getActivityInstance()) != null)
-                            Toast.makeText(activityInstance, R.string.iamutkarshtiwari_github_io_ananas_save_error, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(activityInstance,
+                                    R.string.iamutkarshtiwari_github_io_ananas_save_error,
+                                    Toast.LENGTH_SHORT).show();
                     });
 
 

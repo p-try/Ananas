@@ -24,6 +24,7 @@ import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
 import iamutkarshtiwari.github.io.ananas.editimage.ModuleConfig;
 import iamutkarshtiwari.github.io.ananas.editimage.fragment.BaseEditFragment;
+import iamutkarshtiwari.github.io.ananas.editimage.utils.Utils;
 import iamutkarshtiwari.github.io.ananas.editimage.view.imagezoom.ImageViewTouchBase;
 import io.reactivex.Single;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -69,6 +70,8 @@ public class CropFragment extends BaseEditFragment {
         params.leftMargin = 20;
         params.rightMargin = 20;
 
+        int padding = Utils.dpToPx(8);
+
         RatioText[] ratioTextList = RatioText.values();
         for (int i = 0; i < ratioTextList.length; i++) {
             EditImageActivity activity;
@@ -79,6 +82,7 @@ public class CropFragment extends BaseEditFragment {
                 text.setAllCaps(true);
                 text.setTypeface(text.getTypeface(), Typeface.BOLD);
                 text.setText(getResources().getText(ratioTextList[i].getRatioTextId()));
+                text.setPadding(padding, padding, padding, padding);
                 ratioList.addView(text, params);
 
                 if (i == 0) {

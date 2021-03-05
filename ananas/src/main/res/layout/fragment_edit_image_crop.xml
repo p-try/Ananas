@@ -5,26 +5,34 @@
     <ImageView
         android:id="@+id/back_to_main"
         android:layout_width="40dp"
-        android:layout_marginLeft="16dp"
         android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/image_edit_back" />
+        android:layout_marginStart="16dp"
+        android:layout_marginLeft="16dp"
+        android:paddingTop="@dimen/margin_16dp"
+        android:paddingBottom="@dimen/margin_16dp"
+        android:src="@drawable/ic_baseline_arrow_back" />
 
     <HorizontalScrollView
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/back_to_main">
+        android:layout_marginBottom="@dimen/margin_8dp"
+        android:layout_toEndOf="@id/back_to_main"
+        android:layout_toRightOf="@id/back_to_main"
+        android:scrollbarThumbHorizontal="@drawable/drawable_scroll_bar"
+        android:scrollbars="horizontal">
 
         <LinearLayout
             android:id="@+id/ratio_list_group"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center_vertical"
-            android:orientation="horizontal"/>
+            android:orientation="horizontal" />
     </HorizontalScrollView>
 
 </RelativeLayout>
