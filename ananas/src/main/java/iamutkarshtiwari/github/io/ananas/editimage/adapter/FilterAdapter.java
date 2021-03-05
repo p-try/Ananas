@@ -53,7 +53,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int pos) {
-        final int position = pos;
+        final int position = holder.getAdapterPosition();
         FilterViewHolder filterViewHolder = (FilterViewHolder) holder;
         String name = filters[position];
         filterViewHolder.text.setText(name);
@@ -74,7 +74,7 @@ public class FilterAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             filterListFragment.enableFilter(position);
         });
 
-        if (selectedPosition == pos) {
+        if (selectedPosition == holder.getAdapterPosition()) {
             filterViewHolder.text.setTextColor(ContextCompat
                     .getColor(holder.itemView.getContext(), R.color.black));
             filterViewHolder.text.setBackgroundColor(ContextCompat
