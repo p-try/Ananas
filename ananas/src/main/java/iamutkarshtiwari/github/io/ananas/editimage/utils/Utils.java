@@ -1,5 +1,6 @@
 package iamutkarshtiwari.github.io.ananas.editimage.utils;
 
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
@@ -104,5 +105,9 @@ public class Utils {
         canvas.drawBitmap(resultBitmap, 0, 0, paint);
 
         return resultBitmap;
+    }
+
+    public static int dpToPx(int dp) {
+        return (int) (dp * Resources.getSystem().getDisplayMetrics().density);
     }
 }

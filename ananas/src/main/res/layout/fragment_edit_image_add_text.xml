@@ -8,8 +8,11 @@
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:src="@drawable/image_edit_back" />
+        android:layout_marginStart="@dimen/margin_16dp"
+        android:paddingTop="@dimen/margin_16dp"
+        android:paddingBottom="@dimen/margin_16dp"
+        android:src="@drawable/ic_baseline_arrow_back"
+        android:layout_marginLeft="@dimen/margin_16dp" />
 
     <LinearLayout
         android:id="@+id/add_text_btn"
