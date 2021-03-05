@@ -1,65 +1,65 @@
 <resources>
-    <string name="iamutkarshtiwari_github_io_ananas_library_name">Photo Editor</string>
-    <string name="iamutkarshtiwari_github_io_ananas_no_images">No image found</string>
-    <string name="iamutkarshtiwari_github_io_ananas_images">%d images</string>
-    <string name="iamutkarshtiwari_github_io_ananas_done">DONE</string>
-    <string name="iamutkarshtiwari_github_io_ananas_apply">APPLY</string>
+    <string name="iamutkarshtiwari_github_io_ananas_library_name">محرر الصور</string>
+    <string name="iamutkarshtiwari_github_io_ananas_no_images">لم نستطع إيجاد الصورة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_images">صورة %d</string>
+    <string name="iamutkarshtiwari_github_io_ananas_done">تم</string>
+    <string name="iamutkarshtiwari_github_io_ananas_apply">تطبيق</string>
 
-    <string name="iamutkarshtiwari_github_io_ananas_stickers">Stickers</string>
-    <string name="iamutkarshtiwari_github_io_ananas_filter">Filters</string>
-    <string name="iamutkarshtiwari_github_io_ananas_crop">Crop</string>
-    <string name="iamutkarshtiwari_github_io_ananas_rotate">Rotate</string>
-    <string name="iamutkarshtiwari_github_io_ananas_text">Text</string>
-    <string name="iamutkarshtiwari_github_io_ananas_brush">Brush</string>
-    <string name="iamutkarshtiwari_github_io_ananas_eraser">Eraser</string>
-    <string name="iamutkarshtiwari_github_io_ananas_edit">Edit</string>
-    <string name="iamutkarshtiwari_github_io_ananas_brightness">Brightness</string>
-    <string name="iamutkarshtiwari_github_io_ananas_saturation">Saturation</string>
-    <string name="iamutkarshtiwari_github_io_ananas_size">Size</string>
-    <string name="iamutkarshtiwari_github_io_ananas_opacity">Opacity</string>
+    <string name="iamutkarshtiwari_github_io_ananas_stickers">ملصقات</string>
+    <string name="iamutkarshtiwari_github_io_ananas_filter">فلاتر</string>
+    <string name="iamutkarshtiwari_github_io_ananas_crop">قص</string>
+    <string name="iamutkarshtiwari_github_io_ananas_rotate">تدوير</string>
+    <string name="iamutkarshtiwari_github_io_ananas_text">نص</string>
+    <string name="iamutkarshtiwari_github_io_ananas_brush">فرشاة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_eraser">ممحاة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_edit">تحرير</string>
+    <string name="iamutkarshtiwari_github_io_ananas_brightness">الإضاءة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_saturation">تشبع اللون</string>
+    <string name="iamutkarshtiwari_github_io_ananas_size">الحجم</string>
+    <string name="iamutkarshtiwari_github_io_ananas_opacity">الشفافية</string>
 
-    <string name="materialcolorpicker__errHex">Hex Code Format incorrect</string>
-    <string name="materialcolorpicker__btnSelectColor">Select</string>
+    <string name="materialcolorpicker__errHex">صيغة رمز اللون خاطئة</string>
+    <string name="materialcolorpicker__btnSelectColor">اختر</string>
 
-    <string name="iamutkarshtiwari_github_io_ananas_not_selected">Please choose an image for edit</string>
-    <string name="iamutkarshtiwari_github_io_ananas_save_error">Save error!</string>
-    <string name="iamutkarshtiwari_github_io_ananas_load_error">Failed to load the image!</string>
-    <string name="iamutkarshtiwari_github_io_ananas_loading">Loading…</string>
+    <string name="iamutkarshtiwari_github_io_ananas_not_selected">الرجاء اختيار صورة لتحريرها</string>
+    <string name="iamutkarshtiwari_github_io_ananas_save_error">حدثت مشكلة أثناء الحفظ!</string>
+    <string name="iamutkarshtiwari_github_io_ananas_load_error">فشل في تحميل الصورة!</string>
+    <string name="iamutkarshtiwari_github_io_ananas_loading">جاري التحميل...</string>
 
-    <string name="iamutkarshtiwari_github_io_ananas_free_size">FREE</string>
-    <string name="iamutkarshtiwari_github_io_ananas_fit_image">ORIGINAL</string>
-    <string name="iamutkarshtiwari_github_io_ananas_square">SQUARE</string>
+    <string name="iamutkarshtiwari_github_io_ananas_free_size">حجم غير محدود</string>
+    <string name="iamutkarshtiwari_github_io_ananas_fit_image">الحجم الأصلي</string>
+    <string name="iamutkarshtiwari_github_io_ananas_square">مربع</string>
     <string name="iamutkarshtiwari_github_io_ananas_ratio3_4">3:4</string>
     <string name="iamutkarshtiwari_github_io_ananas_ratio4_3">4:3</string>
     <string name="iamutkarshtiwari_github_io_ananas_ratio9_16">9:16</string>
     <string name="iamutkarshtiwari_github_io_ananas_ratio16_9">16:9</string>
 
     <string-array name="iamutkarshtiwari_github_io_ananas_filters">
-        <item>Origin</item>
-        <item>Soft</item>
-        <item>Black</item>
-        <item>Classic</item>
-        <item>Gorgeous</item>
-        <item>Retro</item>
-        <item>Grace</item>
-        <item>Film</item>
-        <item>Memory</item>
-        <item>Yogurt</item>
-        <item>Fleeting</item>
-        <item>Shine</item>
+        <item>أصلي</item>
+        <item>ناعم</item>
+        <item>أسود</item>
+        <item>كلاسيكي</item>
+        <item>خلاب</item>
+        <item>ريترو</item>
+        <item>أنيق</item>
+        <item>فيلم</item>
+        <item>ذكرى</item>
+        <item>لبن</item>
+        <item>عابر</item>
+        <item>مضيء</item>
     </string-array>
 
     <string-array name="iamutkarshtiwari_github_io_ananas_type_names">
-        <item>WOLF</item>
+        <item>ولف</item>
     </string-array>
 
-    <string name="iamutkarshtiwari_github_io_ananas_more">More</string>
-    <string name="iamutkarshtiwari_github_io_ananas_exit_without_save">The edited image is not saved. Do you want to exit? </string>
-    <string name="iamutkarshtiwari_github_io_ananas_confirm">Confirm</string>
-    <string name="iamutkarshtiwari_github_io_ananas_cancel">Cancel</string>
+    <string name="iamutkarshtiwari_github_io_ananas_more">المزيد</string>
+    <string name="iamutkarshtiwari_github_io_ananas_exit_without_save">لم يتم حفظ الصورة المحررة، هل ما زلت تريد الخروج؟</string>
+    <string name="iamutkarshtiwari_github_io_ananas_confirm">تأكيد</string>
+    <string name="iamutkarshtiwari_github_io_ananas_cancel">إلغاء</string>
 
-    <string name="iamutkarshtiwari_github_io_ananas_beauty">Beauty</string>
-    <string name="iamutkarshtiwari_github_io_ananas_smooth">Smoothness</string>
-    <string name="iamutkarshtiwari_github_io_ananas_white_skin">Skin Tone</string>
+    <string name="iamutkarshtiwari_github_io_ananas_beauty">الجمال</string>
+    <string name="iamutkarshtiwari_github_io_ananas_smooth">النعومة</string>
+    <string name="iamutkarshtiwari_github_io_ananas_white_skin">لون البشرة</string>
 
 </resources>
