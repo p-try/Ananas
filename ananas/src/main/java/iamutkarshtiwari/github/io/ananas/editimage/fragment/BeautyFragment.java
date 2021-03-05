@@ -10,6 +10,7 @@ import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -38,6 +39,8 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
     private int smooth = 0;
     private int whiteSkin = 0;
 
+    private AppCompatTextView textPercentSmoothness;
+    private AppCompatTextView textPercentSkinTone;
 
     public static BeautyFragment newInstance() {
         return new BeautyFragment();
@@ -60,6 +63,9 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
 
         smoothValueBar = view.findViewById(R.id.smooth_value_bar);
         whiteValueBar = view.findViewById(R.id.white_skin_value_bar);
+
+        textPercentSmoothness = view.findViewById(R.id.textPercentSmoothness);
+        textPercentSkinTone = view.findViewById(R.id.textPercentSkinTone);
 
         View backToMenu = view.findViewById(R.id.back_to_main);
         backToMenu.setOnClickListener(new BackToMenuClick());// 返回主菜单
@@ -87,6 +93,9 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
         }
         smooth = smoothValueBar.getProgress();
         whiteSkin = whiteValueBar.getProgress();
+
+        textPercentSkinTone.setText(String.valueOf(whiteSkin));
+        textPercentSmoothness.setText(String.valueOf(smooth / 5));
 
         EditImageActivity activity;
         if (smooth == 0 && whiteSkin == 0 && (activity = getActivityInstance()) != null) {
@@ -163,7 +172,7 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
     @Override
     public void onShow() {
         EditImageActivity activity;
-        if ((activity = getActivityInstance())!= null) {
+        if ((activity = getActivityInstance()) != null) {
             activity.mode = EditImageActivity.MODE_BEAUTY;
             activity.mainImage.setImageBitmap(activity.getMainBit());
             activity.mainImage.setDisplayType(ImageViewTouchBase.DisplayType.FIT_TO_SCREEN);
@@ -174,7 +183,8 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
 
     public void applyBeauty() {
         EditImageActivity activity;
-        if (finalBmp != null && (smooth != 0 || whiteSkin != 0) && (activity = getActivityInstance()) != null) {
+        if (finalBmp != null && (smooth != 0 || whiteSkin != 0) && (activity =
+                getActivityInstance()) != null) {
             activity.changeMainBitmap(finalBmp, true);
         }
 

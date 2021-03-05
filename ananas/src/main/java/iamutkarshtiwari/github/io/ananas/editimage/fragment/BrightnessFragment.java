@@ -10,6 +10,7 @@ import android.widget.SeekBar;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatTextView;
 
 import iamutkarshtiwari.github.io.ananas.R;
 import iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity;
@@ -26,6 +27,7 @@ public class BrightnessFragment extends BaseEditFragment {
     private static final int INITIAL_BRIGHTNESS = 0;
 
     private SeekBar mSeekBar;
+    private AppCompatTextView textPercent;
 
     public static BrightnessFragment newInstance() {
         return new BrightnessFragment();
@@ -33,7 +35,8 @@ public class BrightnessFragment extends BaseEditFragment {
 
     @Nullable
     @Override
-    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_edit_image_brightness, null);
     }
 
@@ -47,6 +50,7 @@ public class BrightnessFragment extends BaseEditFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mSeekBar = view.findViewById(R.id.seekBar);
+        textPercent = view.findViewById(R.id.text_median);
 
         View mBackToMenu = view.findViewById(R.id.back_to_main);
         mBackToMenu.setOnClickListener(new BrightnessFragment.BackToMenuClick());
@@ -63,6 +67,9 @@ public class BrightnessFragment extends BaseEditFragment {
                 EditImageActivity activity;
                 if ((activity = getActivityInstance()) != null)
                     activity.brightnessView.setBright(value / 10f);
+
+                int val = (int) (value / 20);
+                textPercent.setText(String.valueOf(val));
             }
 
             @Override
@@ -79,7 +86,8 @@ public class BrightnessFragment extends BaseEditFragment {
     }
 
     @Override
-    public void onShow() {EditImageActivity activity;
+    public void onShow() {
+        EditImageActivity activity;
         if ((activity = getActivityInstance()) != null) {
             activity.mode = EditImageActivity.MODE_BRIGHTNESS;
             activity.mainImage.setImageBitmap(activity.getMainBit());
@@ -96,7 +104,7 @@ public class BrightnessFragment extends BaseEditFragment {
     @Override
     public void backToMain() {
         EditImageActivity activity;
-        if ((activity = getActivityInstance())!= null) {
+        if ((activity = getActivityInstance()) != null) {
             activity.mode = EditImageActivity.MODE_NONE;
             activity.bottomGallery.setCurrentItem(0);
             activity.mainImage.setVisibility(View.VISIBLE);
@@ -112,15 +120,17 @@ public class BrightnessFragment extends BaseEditFragment {
             return;
         }
         EditImageActivity activity;
-        if ((activity = getActivityInstance())!= null) {
+        if ((activity = getActivityInstance()) != null) {
             Bitmap bitmap = ((BitmapDrawable) activity.brightnessView.getDrawable()).getBitmap();
-            activity.changeMainBitmap(Utils.brightBitmap(bitmap, activity.brightnessView.getBright()), true);
+            activity.changeMainBitmap(Utils.brightBitmap(bitmap,
+                    activity.brightnessView.getBright()), true);
         }
         backToMain();
     }
 
     private void initView() {
         mSeekBar.setProgress(mSeekBar.getMax() / 2);
+        textPercent.setText(String.valueOf(0));
     }
 
 

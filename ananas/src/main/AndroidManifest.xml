@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="iamutkarshtiwari.github.io.ananas">
 
-    <application>
+    <application android:supportsRtl="true">
         <activity
             android:name="iamutkarshtiwari.github.io.ananas.editimage.EditImageActivity"
             android:label="@string/iamutkarshtiwari_github_io_ananas_library_name"

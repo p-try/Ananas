@@ -22,6 +22,9 @@ class PaintViewModel : ViewModel() {
     private val mutableIsEraser = MutableLiveData(false)
     val isEraser: LiveData<Boolean> get() = mutableIsEraser
 
+    private val mutableSelectedColorPos = MutableLiveData(0)
+    val selectedColorPos: LiveData<Int> get() = mutableSelectedColorPos
+
     fun setBrushColor(color: Int) {
         mutableBrushColor.value = color
     }
@@ -42,10 +45,15 @@ class PaintViewModel : ViewModel() {
         mutableIsEraser.value = isEraser
     }
 
+    fun setSelectedColorPos(pos: Int) {
+        mutableSelectedColorPos.value = pos
+    }
+
     fun resetToDefault() {
         mutableBrushSize.value = INITIAL_WIDTH
         mutableBrushColor.value = DEFAULT_COLOR
         mutableBrushOpacity.value = MAX_ALPHA
+        mutableSelectedColorPos.value = 0
 
         mutableEraserSize.value = INITIAL_WIDTH
         mutableIsEraser.value = false
@@ -55,6 +63,6 @@ class PaintViewModel : ViewModel() {
         const val MAX_PERCENT = 100f
         private const val INITIAL_WIDTH = 50
         const val MAX_ALPHA = 255f
-        private const val DEFAULT_COLOR = Color.WHITE
+        private const val DEFAULT_COLOR: Int = Color.BLACK
     }
 }

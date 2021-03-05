@@ -5,43 +5,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <SeekBar
-        android:id="@+id/sbOpacity"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:layout_marginEnd="@dimen/spacing_small"
-        android:progress="100"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtOpacity" />
-
-    <SeekBar
-        android:id="@+id/sbSize"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginTop="@dimen/spacing_small"
-        android:layout_marginEnd="@dimen/spacing_small"
-        android:progress="50"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtBrushSize" />
-
-    <TextView
-        android:id="@+id/txtOpacity"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_small"
-        android:layout_marginTop="@dimen/spacing_xlarge"
-        android:layout_marginEnd="@dimen/spacing_small"
-        android:text="@string/iamutkarshtiwari_github_io_ananas_opacity"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/sbSize" />
-
     <TextView
         android:id="@+id/txtBrushSize"
         android:layout_width="0dp"
@@ -51,9 +14,72 @@
         android:layout_marginEnd="@dimen/spacing_small"
         android:text="@string/iamutkarshtiwari_github_io_ananas_size"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/brushSizeView"
+        app:layout_constraintEnd_toEndOf="@id/txtOpacity"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/brushSizeView" />
+
+    <SeekBar
+        android:id="@+id/sbSize"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginTop="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_small"
+        android:progress="50"
+        android:min="1"
+        app:layout_constraintBottom_toBottomOf="@id/brushSizeView"
+        app:layout_constraintEnd_toStartOf="@id/brushSizeView"
+        app:layout_constraintStart_toEndOf="@id/txtBrushSize"
+        app:layout_constraintTop_toTopOf="@+id/brushSizeView" />
+
+    <iamutkarshtiwari.github.io.ananas.editimage.view.CircleView
+        android:id="@+id/brushSizeView"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/txtOpacity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/spacing_small"
+        android:layout_marginEnd="@dimen/spacing_small"
+        android:gravity="start"
+        android:text="@string/iamutkarshtiwari_github_io_ananas_opacity"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintBottom_toBottomOf="@id/opacitySizeView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/opacitySizeView" />
+
+    <SeekBar
+        android:id="@+id/sbOpacity"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:progress="100"
+        app:layout_constraintBottom_toBottomOf="@id/opacitySizeView"
+        app:layout_constraintEnd_toEndOf="@id/sbSize"
+        app:layout_constraintStart_toStartOf="@id/sbSize"
+        app:layout_constraintTop_toBottomOf="@+id/txtOpacity"
+        app:layout_constraintTop_toTopOf="@id/opacitySizeView" />
+
+    <androidx.appcompat.widget.AppCompatImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="@dimen/margin_8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/brushSizeView" />
+
+    <iamutkarshtiwari.github.io.ananas.editimage.view.CircleView
+        android:id="@+id/opacitySizeView"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_marginTop="@dimen/margin_8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/brushSizeView" />
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvColors"
@@ -61,12 +87,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginStart="@dimen/spacing_small"
         android:layout_marginTop="@dimen/spacing_xlarge"
         android:layout_marginEnd="@dimen/spacing_small"
         android:layout_marginBottom="@dimen/spacing_small"
         android:orientation="horizontal"
+        android:scrollbars="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
