@@ -50,9 +50,12 @@ public class SaturationFragment extends BaseEditFragment {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 EditImageActivity activity;
-                if ((activity = getActivityInstance()) != null)
+                if ((activity = getActivityInstance()) != null) {
                     activity.saturationView.setSaturation(progress / 10f);
-                textPercent.setText(String.valueOf(progress / 20));
+                }
+
+                int value = progress - (seekBar.getMax() / 2);
+                textPercent.setText(String.valueOf(value / 20));
             }
 
             @Override
