@@ -28,6 +28,7 @@
         android:layout_toRightOf="@id/back_to_main"
         android:paddingBottom="@dimen/margin_8dp"
         android:scrollbarStyle="insideInset"
+        android:scrollbarThumbHorizontal="@drawable/drawable_scroll_bar"
         android:scrollbars="horizontal"
         tools:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:listitem="@layout/filter_item"

@@ -13,14 +13,14 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
         android:layout_margin="@dimen/margin_20dp"
         android:background="@drawable/background_border"
         android:padding="@dimen/padding_10dp"
         android:text="@string/iamutkarshtiwari_github_io_ananas_done"
         android:textAllCaps="false"
         android:textColor="@color/white"
-        android:textSize="@dimen/text_size_16sp"
-        android:layout_alignParentRight="true" />
+        android:textSize="@dimen/text_size_16sp" />
 
     <EditText
         android:id="@+id/add_text_edit_text"
@@ -40,6 +40,9 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal"
+        android:scrollbarStyle="outsideInset"
+        android:scrollbarThumbHorizontal="@drawable/drawable_scroll_bar"
+        android:scrollbars="horizontal"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         tools:background="@android:color/black"
         tools:listitem="@layout/color_picker_item_list" />

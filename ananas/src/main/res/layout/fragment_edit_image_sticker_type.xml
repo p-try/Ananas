@@ -28,6 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:scrollbarThumbHorizontal="@drawable/drawable_scroll_bar"
             android:scrollbars="horizontal"
             tools:listitem="@layout/view_sticker_type_item"
             tools:orientation="horizontal" />
@@ -56,6 +57,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
+            android:scrollbarThumbHorizontal="@drawable/drawable_scroll_bar"
             android:scrollbars="horizontal"
             tools:listitem="@layout/view_sticker_item"
             tools:orientation="horizontal" />

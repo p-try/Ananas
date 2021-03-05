@@ -99,6 +99,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/sbOpacity"
         tools:background="@android:color/black"
+        android:scrollbarStyle="outsideInset"
         tools:listitem="@layout/color_picker_item_list"
         android:layout_alignParentRight="true" />
 
