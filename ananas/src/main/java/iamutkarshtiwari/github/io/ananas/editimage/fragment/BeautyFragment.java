@@ -1,6 +1,9 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -62,7 +65,11 @@ public class BeautyFragment extends BaseEditFragment implements SeekBar.OnSeekBa
         super.onViewCreated(view, savedInstanceState);
 
         smoothValueBar = view.findViewById(R.id.smooth_value_bar);
+        smoothValueBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.LTGRAY,
+                PorterDuff.Mode.MULTIPLY));
         whiteValueBar = view.findViewById(R.id.white_skin_value_bar);
+        whiteValueBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.LTGRAY,
+                PorterDuff.Mode.MULTIPLY));
 
         textPercentSmoothness = view.findViewById(R.id.textPercentSmoothness);
         textPercentSkinTone = view.findViewById(R.id.textPercentSkinTone);

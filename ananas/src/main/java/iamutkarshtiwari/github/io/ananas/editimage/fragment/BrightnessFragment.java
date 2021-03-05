@@ -1,6 +1,9 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -50,6 +53,8 @@ public class BrightnessFragment extends BaseEditFragment {
         super.onViewCreated(view, savedInstanceState);
 
         mSeekBar = view.findViewById(R.id.seekBar);
+        mSeekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.LTGRAY,
+                PorterDuff.Mode.MULTIPLY));
         textPercent = view.findViewById(R.id.text_median);
 
         View mBackToMenu = view.findViewById(R.id.back_to_main);

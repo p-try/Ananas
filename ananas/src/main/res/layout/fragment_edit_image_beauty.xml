@@ -28,7 +28,7 @@
         app:layout_constraintStart_toEndOf="@id/back_to_main"
         app:layout_constraintTop_toTopOf="@id/back_to_main" />
 
-    <iamutkarshtiwari.github.io.ananas.editimage.view.CustomSeekBar
+    <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/smooth_value_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -65,7 +65,7 @@
         app:layout_constraintEnd_toEndOf="@id/textSmoothness"
         app:layout_constraintStart_toEndOf="@id/back_to_main" />
 
-    <iamutkarshtiwari.github.io.ananas.editimage.view.CustomSeekBar
+    <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/white_skin_value_bar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
