@@ -1,6 +1,9 @@
 package iamutkarshtiwari.github.io.ananas.editimage.fragment;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -46,6 +49,8 @@ public class SaturationFragment extends BaseEditFragment {
         textPercent = view.findViewById(R.id.text_median);
 
         mSeekBar = view.findViewById(R.id.seekBar);
+        mSeekBar.getProgressDrawable().setColorFilter(new PorterDuffColorFilter(Color.LTGRAY,
+                PorterDuff.Mode.MULTIPLY));
         mSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {

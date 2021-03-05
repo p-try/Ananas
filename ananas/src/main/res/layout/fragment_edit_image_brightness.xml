@@ -51,7 +51,7 @@
         app:layout_constraintBaseline_toBaselineOf="@id/text_median"
         app:layout_constraintEnd_toEndOf="@id/seekBar" />
 
-    <iamutkarshtiwari.github.io.ananas.editimage.view.CustomSeekBar
+    <androidx.appcompat.widget.AppCompatSeekBar
         android:id="@+id/seekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
