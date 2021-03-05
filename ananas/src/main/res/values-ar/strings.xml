@@ -13,8 +13,8 @@
     <string name="iamutkarshtiwari_github_io_ananas_brush">فرشاة</string>
     <string name="iamutkarshtiwari_github_io_ananas_eraser">ممحاة</string>
     <string name="iamutkarshtiwari_github_io_ananas_edit">تحرير</string>
-    <string name="iamutkarshtiwari_github_io_ananas_brightness">الإضاءة</string>
-    <string name="iamutkarshtiwari_github_io_ananas_saturation">تشبع اللون</string>
+    <string name="iamutkarshtiwari_github_io_ananas_brightness">السطوع</string>
+    <string name="iamutkarshtiwari_github_io_ananas_saturation">التشبع</string>
     <string name="iamutkarshtiwari_github_io_ananas_size">الحجم</string>
     <string name="iamutkarshtiwari_github_io_ananas_opacity">الشفافية</string>
 
@@ -26,7 +26,7 @@
     <string name="iamutkarshtiwari_github_io_ananas_load_error">فشل في تحميل الصورة!</string>
     <string name="iamutkarshtiwari_github_io_ananas_loading">جاري التحميل...</string>
 
-    <string name="iamutkarshtiwari_github_io_ananas_free_size">حجم غير محدود</string>
+    <string name="iamutkarshtiwari_github_io_ananas_free_size">حجم غير مقيد</string>
     <string name="iamutkarshtiwari_github_io_ananas_fit_image">الحجم الأصلي</string>
     <string name="iamutkarshtiwari_github_io_ananas_square">مربع</string>
     <string name="iamutkarshtiwari_github_io_ananas_ratio3_4">3:4</string>
@@ -40,13 +40,13 @@
         <item>أسود</item>
         <item>كلاسيكي</item>
         <item>خلاب</item>
-        <item>ريترو</item>
+        <item>تقليدي</item>
         <item>أنيق</item>
         <item>فيلم</item>
         <item>ذكرى</item>
         <item>لبن</item>
         <item>عابر</item>
-        <item>مضيء</item>
+        <item>مشرق</item>
     </string-array>
 
     <string-array name="iamutkarshtiwari_github_io_ananas_type_names">
