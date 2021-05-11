@@ -8,7 +8,7 @@ import androidx.core.content.ContextCompat
 
 object PermissionUtils {
 
-    private fun hasPermission(context: Context, permission: String) =
+    /*private fun hasPermission(context: Context, permission: String) =
             ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
 
     @JvmStatic
@@ -23,13 +23,13 @@ object PermissionUtils {
                 false
             }
 
-    /**
+    *//**
      * Checks all given permissions have been granted.
      *
      * @param grantResults results
      * @return returns true if all permissions have been granted.
-     */
+     *//*
     @JvmStatic
     fun isAllGranted(grantResults: IntArray): Boolean =
-            grantResults.all { it == PackageManager.PERMISSION_GRANTED }
+            grantResults.all { it == PackageManager.PERMISSION_GRANTED }*/
 }

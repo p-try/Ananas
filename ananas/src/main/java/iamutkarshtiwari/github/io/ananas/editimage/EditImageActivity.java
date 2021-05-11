@@ -48,7 +48,6 @@ import iamutkarshtiwari.github.io.ananas.editimage.fragment.paint.PaintFragment;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnLoadingDialogListener;
 import iamutkarshtiwari.github.io.ananas.editimage.interfaces.OnMainBitmapChangeListener;
 import iamutkarshtiwari.github.io.ananas.editimage.utils.BitmapUtils;
-import iamutkarshtiwari.github.io.ananas.editimage.utils.PermissionUtils;
 import iamutkarshtiwari.github.io.ananas.editimage.view.BrightnessView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.CustomPaintView;
 import iamutkarshtiwari.github.io.ananas.editimage.view.CustomViewPager;
@@ -78,11 +77,11 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     public static final int MODE_BEAUTY = 7;
     public static final int MODE_BRIGHTNESS = 8;
     public static final int MODE_SATURATION = 9;
-    private static final int PERMISSIONS_REQUEST_CODE = 110;
+    /*private static final int PERMISSIONS_REQUEST_CODE = 110;
     private final String[] requiredPermissions = new String[]{
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
-    };
+    };*/
 
     public String sourceFilePath;
     public String outputFilePath;
@@ -229,9 +228,9 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
 
         redoUndoController = new RedoUndoController(this, findViewById(R.id.redo_undo_panel));
 
-        if (!PermissionUtils.hasPermissions(this, requiredPermissions)) {
+        /*if (!PermissionUtils.hasPermissions(this, requiredPermissions)) {
             ActivityCompat.requestPermissions(this, requiredPermissions, PERMISSIONS_REQUEST_CODE);
-        }
+        }*/
 
         if (!TextUtils.isEmpty(sourceFilePath)) {
             loadImageFromFile(sourceFilePath);
@@ -244,7 +243,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
         onMainBitmapChangeListener = listener;
     }
 
-    @Override
+    /*@Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
         if (requestCode == PERMISSIONS_REQUEST_CODE) {
@@ -254,7 +253,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
+    }*/
 
     @SuppressLint("SourceLockedOrientationActivity")
     @Override
