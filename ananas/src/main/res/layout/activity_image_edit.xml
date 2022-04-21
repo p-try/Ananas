@@ -40,24 +40,26 @@
             android:flipInterval="1000"
             android:gravity="center">
 
-            <TextView
+            <Button
                 android:id="@+id/save_btn"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_margin="8dp"
+                android:background="@color/design_default_color_primary"
                 android:gravity="center"
                 android:text="@string/iamutkarshtiwari_github_io_ananas_done"
-                android:textAllCaps="true"
-                android:textColor="#ffffff"
+                android:textColor="@color/text_color"
                 android:textSize="14sp" />
 
-            <TextView
+            <Button
                 android:id="@+id/apply"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_margin="8dp"
+                android:background="@color/design_default_color_primary"
                 android:gravity="center"
                 android:text="@string/iamutkarshtiwari_github_io_ananas_apply"
-                android:textAllCaps="true"
-                android:textColor="#ffffff"
+                android:textColor="@color/text_color"
                 android:textSize="14sp" />
         </ViewFlipper>
     </RelativeLayout>
