@@ -77,6 +77,11 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         return this
     }
 
+    fun fullscreen(isFullscreenEnabled: Boolean): ImageEditorIntentBuilder {
+        intent.putExtra(FULLSCREEN, isFullscreenEnabled)
+        return this
+    }
+
     fun setSupportActionBarVisibility(isVisible: Boolean): ImageEditorIntentBuilder {
         intent.putExtra(SUPPORT_ACTION_BAR_VISIBILITY, isVisible)
         return this
@@ -116,5 +121,6 @@ class ImageEditorIntentBuilder @JvmOverloads constructor(private val context: Co
         const val FORCE_PORTRAIT = "force_portrait"
         const val EDITOR_TITLE = "editor_title"
         const val SUPPORT_ACTION_BAR_VISIBILITY = "support_action_bar_visibility"
+        const val FULLSCREEN = "fullscreen"
     }
 }

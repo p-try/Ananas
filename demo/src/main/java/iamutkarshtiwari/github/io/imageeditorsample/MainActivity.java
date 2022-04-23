@@ -125,6 +125,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .withStickerFeature()
                     .withEditorTitle("Photo Editor")
                     .forcePortrait(true)
+                    .fullscreen(true)
                     .setSupportActionBarVisibility(false)
                     .build();
 

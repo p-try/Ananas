@@ -92,6 +92,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     protected boolean isBeenSaved = false;
     protected boolean isPortraitForced = false;
     protected boolean isSupportActionBarEnabled = false;
+    protected boolean isFullscreenEnabled = false;
     public CustomPaintView paintView;
     public ViewFlipper bannerFlipper;
     public BrightnessView brightnessView;
@@ -145,6 +146,7 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
     private void getData() {
         isPortraitForced = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FORCE_PORTRAIT, false);
         isSupportActionBarEnabled  = getIntent().getBooleanExtra(ImageEditorIntentBuilder.SUPPORT_ACTION_BAR_VISIBILITY, false);
+        isFullscreenEnabled = getIntent().getBooleanExtra(ImageEditorIntentBuilder.FULLSCREEN, false);
 
         sourceFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.SOURCE_PATH);
         outputFilePath = getIntent().getStringExtra(ImageEditorIntentBuilder.OUTPUT_PATH);
@@ -538,6 +540,21 @@ public class EditImageActivity extends BaseActivity implements OnLoadingDialogLi
                 default:
                     break;
             }
+        }
+    }
+
+
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (hasFocus && isFullscreenEnabled) {
+            getWindow().getDecorView().setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
+            );
         }
     }
 }
