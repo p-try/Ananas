@@ -1,1 +1,1 @@
-include  ':ananas', ':demo'
+include  ':ananas'
