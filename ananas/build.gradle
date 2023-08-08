@@ -47,6 +47,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:${ktx_lifecycle_viewmode}"
     implementation "androidx.fragment:fragment-ktx:${ktx_fragment}"
     implementation "androidx.activity:activity-ktx:${ktx_activity}"
+    implementation "com.google.android.material:material:${material_version}"
 }
 repositories {
     mavenCentral()
