@@ -135,7 +135,7 @@
             android:layout_gravity="center"
             android:visibility="gone" />
 
-        <com.theartofdev.edmodo.cropper.CropImageView
+        <com.canhub.cropper.CropImageView
             android:id="@+id/crop_panel"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
