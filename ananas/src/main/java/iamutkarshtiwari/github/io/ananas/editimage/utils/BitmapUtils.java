@@ -34,7 +34,7 @@ import android.util.Log;
 import android.view.Display;
 import android.view.View;
 
-import androidx.exifinterface.media.ExifInterface;
+import android.media.ExifInterface;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
