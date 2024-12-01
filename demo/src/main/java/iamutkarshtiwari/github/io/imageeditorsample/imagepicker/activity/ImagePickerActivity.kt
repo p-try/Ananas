@@ -11,7 +11,6 @@ import android.os.Parcelable
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.core.content.FileProvider
-import iamutkarshtiwari.github.io.imageeditorsample.BuildConfig.APPLICATION_ID
 import iamutkarshtiwari.github.io.imageeditorsample.R
 import iamutkarshtiwari.github.io.imageeditorsample.imagepicker.ParentActivity
 import iamutkarshtiwari.github.io.imageeditorsample.imagepicker.utils.compressImageFile
@@ -103,7 +102,7 @@ class ImagePickerActivity : ParentActivity(R.layout.activity_main) {
     }
 
     private fun chooseImage() {
-        startActivityForResult(getPickImageIntent(), RES_IMAGE)
+        startActivityForResult(getPickImageIntent()!!, RES_IMAGE)
     }
 
     private fun getPickImageIntent(): Intent? {
@@ -143,7 +142,7 @@ class ImagePickerActivity : ParentActivity(R.layout.activity_main) {
         file.createNewFile()
         imageUri = FileProvider.getUriForFile(
             this,
-            APPLICATION_ID + getString(R.string.file_provider_name),
+            "iamutkarshtiwari.github.io.imageeditorsample" + getString(R.string.file_provider_name),
             file
         )
         imgPath = file.absolutePath

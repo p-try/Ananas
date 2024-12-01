@@ -33,7 +33,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity {
     public static final int REQUEST_PERMISSION_STORAGE = 1;
     public static final int ACTION_REQUEST_EDITIMAGE = 9;
 
@@ -91,23 +91,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         View selectAlbum = findViewById(R.id.photo_picker);
         View editImage = findViewById(R.id.edit_image);
-        selectAlbum.setOnClickListener(this);
-        editImage.setOnClickListener(this);
+        selectAlbum.setOnClickListener(v -> selectFromAlbum());
+        editImage.setOnClickListener(v -> editImageClick());
 
-        loadingDialog = BaseActivity.getLoadingDialog(this, R.string.iamutkarshtiwari_github_io_ananas_loading,
+        loadingDialog = BaseActivity.getLoadingDialog(this, "loading",
                 false);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.edit_image:
-                editImageClick();
-                break;
-            case R.id.photo_picker:
-                selectFromAlbum();
-                break;
-        }
     }
 
     private void editImageClick() {
@@ -128,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     .build();
             startActivityForResult(intent, ACTION_REQUEST_EDITIMAGE);
         } catch (Exception e) {
-            Toast.makeText(this, R.string.iamutkarshtiwari_github_io_ananas_not_selected, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "not selected", Toast.LENGTH_SHORT).show();
             Log.e("Demo App", e.getMessage());
         }
     }
@@ -186,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                         e -> {
                             e.printStackTrace();
                             Toast.makeText(
-                                    this, R.string.iamutkarshtiwari_github_io_ananas_load_error, Toast.LENGTH_SHORT).show();
+                                    this, "load error", Toast.LENGTH_SHORT).show();
                         }
                 );
 
