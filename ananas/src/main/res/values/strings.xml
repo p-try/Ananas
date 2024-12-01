@@ -61,4 +61,6 @@
     <string name="iamutkarshtiwari_github_io_ananas_beauty">Beauty</string>
     <string name="iamutkarshtiwari_github_io_ananas_smooth">Smoothness</string>
     <string name="iamutkarshtiwari_github_io_ananas_white_skin">Skin Tone</string>
+    <string name="iamutkarshtiwari_github_io_ananas_pick_a_color">Choose a color</string>
+    <string name="iamutkarshtiwari_github_io_ananas_auto_newline">Automatic newline</string>
 </resources>
