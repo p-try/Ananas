@@ -68,33 +68,33 @@
 
             <Button
                 android:id="@+id/save_btn"
-                android:drawableStart="@drawable/baseline_done_24"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_margin="8dp"
+                android:background="#FFBC0100"
+                android:drawableStart="@drawable/baseline_done_24"
+                android:drawableTint="#ffffff"
                 android:gravity="center"
                 android:paddingHorizontal="8dp"
                 android:text="@string/iamutkarshtiwari_github_io_ananas_done"
                 android:textAllCaps="true"
-                android:textSize="14sp"
-                android:layout_margin="8dp"
-                android:background="@color/design_default_color_primary"
                 android:textColor="@color/design_default_color_on_primary"
-                />
+                android:textSize="14sp" />
 
             <Button
                 android:id="@+id/apply"
-                android:drawableStart="@drawable/baseline_done_24"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
+                android:layout_margin="8dp"
+                android:background="#FFBC0100"
+                android:drawableStart="@drawable/baseline_done_24"
+                android:drawableTint="#ffffff"
                 android:gravity="center"
                 android:paddingHorizontal="8dp"
                 android:text="@string/iamutkarshtiwari_github_io_ananas_apply"
                 android:textAllCaps="true"
-                android:textSize="14sp"
-                android:layout_margin="8dp"
-                android:background="@color/design_default_color_primary"
                 android:textColor="@color/design_default_color_on_primary"
-                />
+                android:textSize="14sp" />
         </ViewFlipper>
     </RelativeLayout>
 
